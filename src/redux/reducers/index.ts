@@ -3,7 +3,8 @@ import { combineReducers } from 'redux';
 import { IAction } from "../actions";
 
 const initialState = {
-  testValue: "empty"
+  userLoggedIn: false,
+  user: null
 };
 
 const initialReducer = (state = initialState, action: IAction) => {
