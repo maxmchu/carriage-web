@@ -13,10 +13,8 @@ router.get(
 
 // this route is just used to get the user basic info
 router.get('/user', (req, res, next) => {
-  console.log('===== user!!======')
-  console.log(req.user)
   if (req.user) {
-    return res.json({ user: req.user })
+    return res.json({ user: req.user.Item })
   } else {
     return res.json({ user: null })
   }
