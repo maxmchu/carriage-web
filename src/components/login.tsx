@@ -30,7 +30,7 @@ class Login extends React.Component<ILoginProps, ILoginState> {
 
   public render() {
     return (
-      <Grid container fluid className={"page-container"}>
+      <Grid container className={"page-container"}>
         <Grid.Column width={4} style={{ padding: 0 }}>
           <div className={"login-background"} />
         </Grid.Column>
@@ -77,6 +77,9 @@ class Login extends React.Component<ILoginProps, ILoginState> {
       ...this.state,
       [event.target.name]: event.target.value
     });
+  }
+
+  private handleSubmit(event) {
   }
 }
 

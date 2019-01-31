@@ -1,6 +1,7 @@
-const express = require('express')
-const router = express.Router()
-const passport = require('../passport')
+const express = require('express');
+const router = express.Router();
+const passport = require('../passport');
+const bcrypt = require('bcryptjs');
 const AWS = require('aws-sdk');
 AWS.config.update({ region: process.env.AWS_REGION });
 
@@ -62,6 +63,7 @@ router.post('/logout', (req, res) => {
 })
 
 router.post('/signup', (req, res) => {
+  console.log(req.body);
   const { username, password } = req.body;
   const hashedPassword = bcrypt.hashSync(password, 10);
   const getParams = {
@@ -81,13 +83,13 @@ router.post('/signup', (req, res) => {
   documentClient.get(getParams, function (err, data) {
     if (err) {
       console.error(err, stack);
-      return res.json({ msg: 'error checking Dynamo for existing user' });
+      return res.json({ err: 'Error checking database for existing user.' });
     } else {
-      if (Object.keys(data.length) == 0) {
-        document.put(putParams, function (err, data) {
+      if (Object.keys(data).length == 0) {
+        documentClient.put(putParams, function (err, data) {
           if (err) {
             console.error(err, err.stack);
-            return res.json({ msg: 'error saving user' });
+            return res.json({ err: 'error saving user' });
           } else {
             console.log("registering: ")
             const newUser = {
@@ -98,6 +100,8 @@ router.post('/signup', (req, res) => {
             return res.json(newUser);
           }
         })
+      } else {
+        return res.json({ err: 'That user already exists!' });
       }
     }
   });

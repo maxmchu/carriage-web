@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Button, Form, Grid, Header } from 'semantic-ui-react';
+import { Button, Form, Grid, Header, Message } from 'semantic-ui-react';
+import { handleLocalRegisterRequest } from '../redux/actions';
 
 interface IRegisterProps {
-
+  handleRegisterRequest: (registerData: any) => any;
+  errorMsg: string;
 }
 interface IRegisterState {
   username: string;
@@ -21,11 +23,12 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
       confirmPassword: ''
     }
     this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   public render(): JSX.Element {
     return (
-      <Grid container fluid className={"page-container"}>
+      <Grid container className={"page-container"}>
         <Grid.Column width={4} style={{ padding: 0 }}>
           <div className={"login-background"} />
         </Grid.Column>
@@ -33,6 +36,13 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
           <Header as={"h1"}>ADALift</Header>
           <Header as={"h3"}>Registration</Header>
           {/* TODO: Add state to actually confirm password, and front-end validation */}
+          {
+            (this.props.errorMsg == "") ? null :
+              <Message negative>
+                <Message.Header>There was a problem with your registration</Message.Header>
+                <p>{this.props.errorMsg}</p>
+              </Message>
+          }
           <Form>
             <Form.Field>
               <label>Cornell Email</label>
@@ -52,7 +62,7 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
                 onChange={this.handleChange}
               />
             </Form.Field>
-            <Button type='submit'>Register</Button>
+            <Button type='submit' onClick={this.handleSubmit}>Register</Button>
           </Form>
         </Grid.Column>
       </Grid>
@@ -66,14 +76,24 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
     })
   }
 
+  private handleSubmit(event) {
+    this.props.handleRegisterRequest({
+      username: this.state.username,
+      password: this.state.password
+    });
+  }
+
 }
 
 function mapStateToProps(state: any) {
-  return {};
+  const { registerErrorMsg } = state.auth;
+  return { errorMsg: registerErrorMsg };
 }
 
 function matchDispatchToProps(dispatch: any) {
-  return {};
+  return {
+    handleRegisterRequest: (registerData) => dispatch(handleLocalRegisterRequest(registerData))
+  };
 }
 
 export default connect(mapStateToProps, matchDispatchToProps)(Register);
