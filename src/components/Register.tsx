@@ -1,42 +1,38 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Button, Grid, Header, Form } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
+import { Button, Form, Grid, Header } from 'semantic-ui-react';
 
-import '../styles/components/login.scss';
+interface IRegisterProps {
 
-import { handleGoogleOauth2Request } from '../redux/actions';
-
-interface ILoginProps {
-  googleOauthLogin: () => any;
 }
-
-interface ILoginState {
+interface IRegisterState {
   username: string;
   password: string;
+  confirmPassword: string;
 }
 
-class Login extends React.Component<ILoginProps, ILoginState> {
+class Register extends React.Component<IRegisterProps, IRegisterState> {
 
   public constructor(props: any) {
     super(props);
     this.state = {
       username: '',
-      password: ''
+      password: '',
+      confirmPassword: ''
     }
-    this.handleLoginClick = this.handleLoginClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
-  public render() {
+  public render(): JSX.Element {
     return (
       <Grid container fluid className={"page-container"}>
         <Grid.Column width={4} style={{ padding: 0 }}>
           <div className={"login-background"} />
         </Grid.Column>
-        <Grid.Column width={12}>
+        <Grid.Column width={12} className={""}>
           <Header as={"h1"}>ADALift</Header>
-          <Header as={"h3"}>Login</Header>
+          <Header as={"h3"}>Registration</Header>
+          {/* TODO: Add state to actually confirm password, and front-end validation */}
           <Form>
             <Form.Field>
               <label>Cornell Email</label>
@@ -52,32 +48,24 @@ class Login extends React.Component<ILoginProps, ILoginState> {
               <input
                 type='password'
                 placeholder='ADALift Password'
-                value={this.state.password}
                 name='password'
                 onChange={this.handleChange}
               />
             </Form.Field>
-            <Button type='submit'>Login</Button>
+            <Button type='submit'>Register</Button>
           </Form>
-          <Header as={"h3"}>Need to register?</Header>
-          <p>
-            <Link to={"/register"}>Register for an account here</Link>, which must be approved for the ADALift service by our dispatchers.
-          </p>
         </Grid.Column>
       </Grid>
     )
-  }
-
-  private handleLoginClick(e: any) {
-    this.props.googleOauthLogin();
   }
 
   private handleChange(event) {
     this.setState({
       ...this.state,
       [event.target.name]: event.target.value
-    });
+    })
   }
+
 }
 
 function mapStateToProps(state: any) {
@@ -85,9 +73,7 @@ function mapStateToProps(state: any) {
 }
 
 function matchDispatchToProps(dispatch: any) {
-  return {
-    googleOauthLogin: () => dispatch(handleGoogleOauth2Request())
-  };
+  return {};
 }
 
-export default connect(mapStateToProps, matchDispatchToProps)(Login);
+export default connect(mapStateToProps, matchDispatchToProps)(Register);

@@ -6,6 +6,7 @@ if (process.env.NODE_ENV !== 'production') {
 require('dotenv').config()
 
 const express = require('express')
+const cors = require('cors')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const session = require('express-session')
@@ -13,7 +14,23 @@ const passport = require('./passport')
 const app = express()
 const PORT = process.env.PORT || 5000
 
-// is it ok to keep same tables for both?
+const whitelist = ['*'];
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log(origin);
+      callback(null, true);
+      // callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  exposedHeaders: ['x-auth-token']
+}
+app.use(cors(corsOptions));
+
 const dynamoSessionOptions = {
   table: 'adalift-sessions-dev',
   AWSConfigJSON: {

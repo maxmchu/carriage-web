@@ -4,10 +4,11 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import ConditionalRoute from "./components/ConditionalRoute";
-import Login from "./components/login";
-import Dashboard from "./components/dashboard";
-import Welcome from "./components/welcome";
+import Login from "./components/Login";
+import Dashboard from "./components/Dashboard";
+import Welcome from "./components/Welcome";
 import { handleCheckUserLoggedInRequest } from './redux/actions';
+import Register from './components/Register';
 
 interface IAppProps {
   checkingLogin: boolean;
@@ -34,9 +35,14 @@ class App extends Component<IAppProps, IAppState> {
         <Router>
           <Switch>
             <Route exact path="/" component={Welcome} />
-            <ConditionalRoute exact 
-              path="/login" 
-              component={Login} 
+            <ConditionalRoute exact
+              path="/login"
+              component={Login}
+              routeCondition={!this.props.loggedIn}
+              redirectTo="/dashboard" />
+            <ConditionalRoute exact
+              path="/register"
+              component={Register}
               routeCondition={!this.props.loggedIn}
               redirectTo="/dashboard" />
             <ConditionalRoute exact
