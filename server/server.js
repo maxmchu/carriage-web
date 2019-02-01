@@ -3,7 +3,11 @@ if (process.env.NODE_ENV !== 'production') {
   console.log('loading dev environments')
   require('dotenv').config()
 }
-require('dotenv').config()
+
+if (!process.env.DEBUG_MODE) {
+  console = console || {};
+  console.log = function () { };
+}
 
 const express = require('express')
 const cors = require('cors')

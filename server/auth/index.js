@@ -5,6 +5,11 @@ const bcrypt = require('bcryptjs');
 const AWS = require('aws-sdk');
 AWS.config.update({ region: process.env.AWS_REGION });
 
+if (!process.env.DEBUG_MODE) {
+  console = console || {};
+  console.log = function () { };
+}
+
 const documentClient = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
 
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }))
@@ -23,9 +28,8 @@ router.get('/google/success', (req, res) => {
 
 // this route is just used to get the user basic info
 router.get('/user', (req, res, next) => {
-  // res.header('Access-Control-Allow-Origin', '*');
-  // res.header('Access-Control-Allow-Methods', 'GET,POST,DELETE');
-  // res.header('Access-Control-Allow-Headers', 'Origin, X-Requested With, Content-Type, Accept');
+  console.log("req.user:")
+  console.log(req.user);
   if (req.user) {
     return res.json({ user: req.user.Item })
   } else {
@@ -33,29 +37,28 @@ router.get('/user', (req, res, next) => {
   }
 })
 
-router.post('/login',
-  function (req, res, next) {
-    console.log(req.body)
-    console.log('================')
-    next()
-  },
-  passport.authenticate('local'),
-  (req, res) => {
-    console.log('POST to /login');
-    const user = JSON.parse(JSON.stringify(req.user)); // hack
-    const cleanUser = Object.assign({}, user);
-    if (cleanUser.password) {
-      console.log(`Deleting ${cleanUser.password}`);
-      delete cleanUser.password;
+router.post('/login', function (req, res, next) {
+  passport.authenticate('local', function (err, user, info) {
+    if (err) { return next(err); }
+    if (!user) {
+      return res.send(info);
     }
-    res.json({ user: cleanUser })
-  }
-)
+    req.logIn(user, function (err) {
+      if (err) { return next(err); }
+      const cleanUser = Object.assign({}, user);
+      if (cleanUser.password) {
+        console.log(`Deleting ${cleanUser.password}`);
+        delete cleanUser.password;
+      }
+      return res.send(cleanUser);
+    });
+  })(req, res, next);
+});
 
 router.post('/logout', (req, res) => {
   if (req.user) {
     req.session.destroy()
-    res.clearCookie('connect.sid') // clean up!
+    res.clearCookie('connect.sid')
     return res.json({ msg: 'logging you out' })
   } else {
     return res.json({ msg: 'no user to log out!' })

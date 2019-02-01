@@ -4,10 +4,11 @@ const AWS = require('aws-sdk');
 AWS.config.update({ region: process.env.AWS_REGION });
 const documentClient = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
 
+const checkPassword = function (inputPassword, userPassword) {
+  return bcrypt.compareSync(inputPassword, userPassword);
+}
+
 const strategy = new LocalStrategy(
-  {
-    usernameField: 'email' // not necessary, DEFAULT
-  },
   function (username, password, done) {
     const getParams = {
       TableName: process.env.AWS_DYNAMODB_USER_TABLENAME,
@@ -21,11 +22,11 @@ const strategy = new LocalStrategy(
         return done(err);
       } else {
         if (Object.keys(data).length == 0) {
-          return done(null, false, { message: 'Incorrect username' });
+          return done(null, false, { err: 'Username or password was incorrect found.' });
         } else {
           const user = data.Item;
-          if (!this.checkPassword(password, user.password)) {
-            return done(null, false, { message: 'Incorrect password' });
+          if (!checkPassword(password, user.password)) {
+            return done(null, false, { err: 'Username or password was incorrect.' });
           }
           return done(null, user);
         }
@@ -33,10 +34,6 @@ const strategy = new LocalStrategy(
     })
   }
 )
-
-strategy.checkPassword = function (inputPassword, userPassword) {
-  return bcrypt.compareSync(inputPassword, userPassword);
-}
 
 strategy.hashPassword = function (plaintextPassword) {
   return bcrypt.hashSync(plainTextPassword, 10);

@@ -12,7 +12,7 @@ import {
 
 
 const initialState = {
-  checkingLogin: false,
+  checkingLogin: true,
   loggingIn: false,
   loggedIn: false,
   user: null,
@@ -51,21 +51,24 @@ const authReducer = (state = initialState, action: any) => {
     case LOCAL_LOGIN_REQUEST:
       return {
         ...state,
-        loggingIn: true
+        loggingIn: true,
+        loginErrorMsg: ""
       }
     case LOCAL_LOGIN_SUCCESS:
       return {
         ...state,
         loggingIn: false,
         loggedIn: true,
-        user: action.payload
+        user: action.payload,
+        loginErrorMsg: ""
       }
     case LOCAL_LOGIN_FAILURE:
       return {
         ...state,
         loggingIn: false,
         loggedIn: false,
-        user: null
+        user: null,
+        loginErrorMsg: action.payload.err
       }
     case LOCAL_REGISTER_REQUEST:
       return {

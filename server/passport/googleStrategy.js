@@ -4,6 +4,11 @@ AWS.config.update({ region: process.env.AWS_REGION });
 
 const documentClient = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
 
+if (!process.env.DEBUG_MODE) {
+  console = console || {};
+  console.log = function () { };
+}
+
 const strategy = new GoogleStrategy(
   {
     clientID: process.env.GOOGLE_CLIENT_ID,

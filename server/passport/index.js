@@ -1,23 +1,30 @@
 const passport = require('passport');
 const GoogleStrategy = require('./googleStrategy');
+const LocalStrategy = require('./localStrategy');
 const AWS = require('aws-sdk');
 AWS.config.update({ region: process.env.AWS_REGION });
 
 const documentClient = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
 
+if (!process.env.DEBUG_MODE) {
+  console = console || {};
+  console.log = function () { };
+}
+
 passport.serializeUser((user, done) => {
   // console.log('=== serialize ... called ===')
   // console.log(user)
   // console.log('---------')
-  done(null, { google_id: user.google_id })
+  done(null, { email: user.email })
 })
 
 passport.deserializeUser((id, done) => {
   // console.log('DEserialize ... called')
+  // console.log(id);
   const getParams = {
     TableName: process.env.AWS_DYNAMODB_USER_TABLENAME,
     Key: {
-      google_id: parseInt(id.google_id)
+      email: id.email
     }
   }
   documentClient.get(getParams, function (err, data) {
@@ -33,6 +40,7 @@ passport.deserializeUser((id, done) => {
   })
 })
 
-passport.use(GoogleStrategy)
+passport.use(GoogleStrategy);
+passport.use(LocalStrategy);
 
 module.exports = passport

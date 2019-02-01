@@ -1,14 +1,16 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Button, Grid, Header, Form } from 'semantic-ui-react';
+import { Button, Grid, Header, Form, Loader, Message } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 import '../styles/components/login.scss';
 
-import { handleGoogleOauth2Request } from '../redux/actions';
+import { handleLocalLoginRequest } from '../redux/actions';
 
 interface ILoginProps {
-  googleOauthLogin: () => any;
+  handleLoginRequest: (loginData: any) => any;
+  errorMsg: string;
+  checkingLogin: boolean;
 }
 
 interface ILoginState {
@@ -24,11 +26,16 @@ class Login extends React.Component<ILoginProps, ILoginState> {
       username: '',
       password: ''
     }
-    this.handleLoginClick = this.handleLoginClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   public render() {
+    if (this.props.checkingLogin) {
+      return (
+        <Loader size='massive'>Loading</Loader>
+      )
+    }
     return (
       <Grid container className={"page-container"}>
         <Grid.Column width={4} style={{ padding: 0 }}>
@@ -37,6 +44,13 @@ class Login extends React.Component<ILoginProps, ILoginState> {
         <Grid.Column width={12}>
           <Header as={"h1"}>ADALift</Header>
           <Header as={"h3"}>Login</Header>
+          {
+            (this.props.errorMsg == "") ? null :
+              <Message negative>
+                <Message.Header>There was a problem signing in</Message.Header>
+                <p>{this.props.errorMsg}</p>
+              </Message>
+          }
           <Form>
             <Form.Field>
               <label>Cornell Email</label>
@@ -57,7 +71,7 @@ class Login extends React.Component<ILoginProps, ILoginState> {
                 onChange={this.handleChange}
               />
             </Form.Field>
-            <Button type='submit'>Login</Button>
+            <Button type='submit' onClick={this.handleSubmit}>Login</Button>
           </Form>
           <Header as={"h3"}>Need to register?</Header>
           <p>
@@ -68,10 +82,6 @@ class Login extends React.Component<ILoginProps, ILoginState> {
     )
   }
 
-  private handleLoginClick(e: any) {
-    this.props.googleOauthLogin();
-  }
-
   private handleChange(event) {
     this.setState({
       ...this.state,
@@ -80,16 +90,21 @@ class Login extends React.Component<ILoginProps, ILoginState> {
   }
 
   private handleSubmit(event) {
+    this.props.handleLoginRequest({
+      username: this.state.username,
+      password: this.state.password
+    })
   }
 }
 
 function mapStateToProps(state: any) {
-  return {};
+  const { loginErrorMsg } = state.auth;
+  return { errorMsg: loginErrorMsg };
 }
 
 function matchDispatchToProps(dispatch: any) {
   return {
-    googleOauthLogin: () => dispatch(handleGoogleOauth2Request())
+    handleLoginRequest: (loginData) => dispatch(handleLocalLoginRequest(loginData))
   };
 }
 
