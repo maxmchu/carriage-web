@@ -26,12 +26,10 @@ class App extends Component<IAppProps, IAppState> {
   }
 
   public componentDidMount() {
-    console.log(this.props);
     this.props.checkLoggedIn().then(() => { return; });
   }
 
   public render() {
-    const loginProps = { checkingLogin: this.props.checkingLogin };
     return (
       <div className="App">
         <Router>
@@ -39,14 +37,17 @@ class App extends Component<IAppProps, IAppState> {
             <Route exact path="/" component={Welcome} />
             <ConditionalRoute exact
               path="/login"
-              render={() => <Login {...loginProps} />}
+              component={Login}
               routeCondition={!this.props.loggedIn}
-              redirectTo="/dashboard" />
+              redirectTo="/dashboard"
+              componentProps={{ "checkingLogin": this.props.checkingLogin }}
+            />
             <ConditionalRoute exact
               path="/register"
               component={Register}
               routeCondition={!this.props.loggedIn}
-              redirectTo="/dashboard" />
+              redirectTo="/dashboard"
+            />
             <ConditionalRoute exact
               path="/dashboard"
               component={Dashboard}

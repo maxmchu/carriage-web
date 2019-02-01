@@ -6,6 +6,7 @@ import { Redirect, Route, RouteComponentProps, RouteProps } from 'react-router';
 export interface ConditionalRouteProps extends RouteProps {
   routeCondition: boolean;
   redirectTo: H.LocationDescriptor;
+  componentProps?: any
 }
 
 export default class ConditionalRoute extends React.Component<ConditionalRouteProps> {
@@ -21,7 +22,8 @@ export default class ConditionalRoute extends React.Component<ConditionalRoutePr
       if (!Component) {
         return null;
       }
-      return <Component {...renderProps} />
+      const mergedProps = { ...renderProps, ...this.props.componentProps }
+      return <Component {...mergedProps} />
     }
 
     return <Redirect to={this.props.redirectTo} />;

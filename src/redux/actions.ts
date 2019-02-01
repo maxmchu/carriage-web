@@ -43,7 +43,7 @@ export function checkUserLoggedInFailure(err: any): IAction {
 export function handleCheckUserLoggedInRequest() {
   return function (dispatch: any) {
     dispatch(checkUserLoggedInRequest());
-    return axios.get('auth/user').then(
+    return axios.get('/auth/user').then(
       response => {
         return response.data;
       },
@@ -85,8 +85,8 @@ export function handleLocalLoginRequest(data: any) {
     dispatch(localLoginRequest(data));
     axios.post('/auth/login', data).then(
       response => {
-        console.log("RESPONSE::")
-        console.log(response.data);
+        // console.log("RESPONSE::")
+        // console.log(response.data);
         if (!response.data.err) {
           dispatch(localLoginReturned(response.data));
         } else {
