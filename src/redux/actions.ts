@@ -43,7 +43,7 @@ export function checkUserLoggedInFailure(err: any): IAction {
 export function handleCheckUserLoggedInRequest() {
   return function (dispatch: any) {
     dispatch(checkUserLoggedInRequest());
-    return axios.get('auth/user').then(
+    return axios.get('/auth/user').then(
       response => {
         return response.data;
       },

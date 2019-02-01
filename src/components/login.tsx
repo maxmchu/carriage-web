@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Button, Grid, Header, Form, Loader, Message } from 'semantic-ui-react';
+import { Button, Grid, Header, Form, Message } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 import '../styles/components/login.scss';
@@ -31,18 +31,13 @@ class Login extends React.Component<ILoginProps, ILoginState> {
   }
 
   public render() {
-    if (this.props.checkingLogin) {
-      return (
-        <Loader size='massive'>Loading</Loader>
-      )
-    }
     return (
       <Grid container className={"page-container"}>
         <Grid.Column width={4} style={{ padding: 0 }}>
           <div className={"login-background"} />
         </Grid.Column>
         <Grid.Column width={12}>
-          <Header as={"h1"}>ADALift</Header>
+          <Header as={"h1"}><Link to={"/"}>ADALift</Link></Header>
           <Header as={"h3"}>Login</Header>
           {
             (this.props.errorMsg == "") ? null :

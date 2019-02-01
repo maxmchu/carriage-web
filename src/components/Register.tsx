@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Button, Form, Grid, Header, Message } from 'semantic-ui-react';
+import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react';
 import { handleLocalRegisterRequest } from '../redux/actions';
+import { Link } from 'react-router-dom';
 
 interface IRegisterProps {
   handleRegisterRequest: (registerData: any) => any;
@@ -33,7 +34,7 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
           <div className={"login-background"} />
         </Grid.Column>
         <Grid.Column width={12} className={""}>
-          <Header as={"h1"}>ADALift</Header>
+          <Header as={"h1"}><Link to={"/"}>ADALift</Link></Header>
           <Header as={"h3"}>Registration</Header>
           {/* TODO: Add state to actually confirm password, and front-end validation */}
           {
@@ -64,6 +65,12 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
             </Form.Field>
             <Button type='submit' onClick={this.handleSubmit}>Register</Button>
           </Form>
+          <Segment>
+            <p>
+              Please note that you will have to wait for your account to be approved
+              for rides by our dispatchers before you can request rides.
+            </p>
+          </Segment>
         </Grid.Column>
       </Grid>
     )
