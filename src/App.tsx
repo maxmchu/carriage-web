@@ -26,8 +26,7 @@ class App extends Component<IAppProps, IAppState> {
   }
 
   public componentDidMount() {
-    console.log(this.props);
-    this.props.checkLoggedIn().then(() => { console.log("yeet"); return; });
+    this.props.checkLoggedIn().then(() => { return; });
   }
 
   public render() {

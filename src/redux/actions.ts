@@ -85,8 +85,8 @@ export function handleLocalLoginRequest(data: any) {
     dispatch(localLoginRequest(data));
     axios.post('/auth/login', data).then(
       response => {
-        console.log("RESPONSE::")
-        console.log(response.data);
+        // console.log("RESPONSE::")
+        // console.log(response.data);
         if (!response.data.err) {
           dispatch(localLoginReturned(response.data));
         } else {
