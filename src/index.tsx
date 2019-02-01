@@ -6,6 +6,7 @@ import App from './App';
 import store from './redux/index';
 import * as serviceWorker from './serviceWorker';
 import 'typeface-roboto';
+import 'semantic-ui-css/semantic.min.css';
 
 ReactDOM.render(
   <Provider store={store}>

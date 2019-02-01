@@ -1,53 +1,45 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Button, Grid, Header, Form, Loader, Message } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
+import { Button, Form, Grid, Header, Message } from 'semantic-ui-react';
+import { handleLocalRegisterRequest } from '../redux/actions';
 
-import '../styles/components/login.scss';
-
-import { handleLocalLoginRequest } from '../redux/actions';
-
-interface ILoginProps {
-  handleLoginRequest: (loginData: any) => any;
+interface IRegisterProps {
+  handleRegisterRequest: (registerData: any) => any;
   errorMsg: string;
-  checkingLogin: boolean;
 }
-
-interface ILoginState {
+interface IRegisterState {
   username: string;
   password: string;
+  confirmPassword: string;
 }
 
-class Login extends React.Component<ILoginProps, ILoginState> {
+class Register extends React.Component<IRegisterProps, IRegisterState> {
 
   public constructor(props: any) {
     super(props);
     this.state = {
       username: '',
-      password: ''
+      password: '',
+      confirmPassword: ''
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  public render() {
-    if (this.props.checkingLogin) {
-      return (
-        <Loader size='massive'>Loading</Loader>
-      )
-    }
+  public render(): JSX.Element {
     return (
       <Grid container className={"page-container"}>
         <Grid.Column width={4} style={{ padding: 0 }}>
           <div className={"login-background"} />
         </Grid.Column>
-        <Grid.Column width={12}>
+        <Grid.Column width={12} className={""}>
           <Header as={"h1"}>ADALift</Header>
-          <Header as={"h3"}>Login</Header>
+          <Header as={"h3"}>Registration</Header>
+          {/* TODO: Add state to actually confirm password, and front-end validation */}
           {
             (this.props.errorMsg == "") ? null :
               <Message negative>
-                <Message.Header>There was a problem signing in</Message.Header>
+                <Message.Header>There was a problem with your registration</Message.Header>
                 <p>{this.props.errorMsg}</p>
               </Message>
           }
@@ -66,17 +58,12 @@ class Login extends React.Component<ILoginProps, ILoginState> {
               <input
                 type='password'
                 placeholder='ADALift Password'
-                value={this.state.password}
                 name='password'
                 onChange={this.handleChange}
               />
             </Form.Field>
-            <Button type='submit' onClick={this.handleSubmit}>Login</Button>
+            <Button type='submit' onClick={this.handleSubmit}>Register</Button>
           </Form>
-          <Header as={"h3"}>Need to register?</Header>
-          <p>
-            <Link to={"/register"}>Register for an account here</Link>, which must be approved for the ADALift service by our dispatchers.
-          </p>
         </Grid.Column>
       </Grid>
     )
@@ -86,26 +73,27 @@ class Login extends React.Component<ILoginProps, ILoginState> {
     this.setState({
       ...this.state,
       [event.target.name]: event.target.value
-    });
+    })
   }
 
   private handleSubmit(event) {
-    this.props.handleLoginRequest({
+    this.props.handleRegisterRequest({
       username: this.state.username,
       password: this.state.password
-    })
+    });
   }
+
 }
 
 function mapStateToProps(state: any) {
-  const { loginErrorMsg } = state.auth;
-  return { errorMsg: loginErrorMsg };
+  const { registerErrorMsg } = state.auth;
+  return { errorMsg: registerErrorMsg };
 }
 
 function matchDispatchToProps(dispatch: any) {
   return {
-    handleLoginRequest: (loginData) => dispatch(handleLocalLoginRequest(loginData))
+    handleRegisterRequest: (registerData) => dispatch(handleLocalRegisterRequest(registerData))
   };
 }
 
-export default connect(mapStateToProps, matchDispatchToProps)(Login);
+export default connect(mapStateToProps, matchDispatchToProps)(Register);

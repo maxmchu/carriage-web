@@ -1,14 +1,10 @@
+@import '../App.scss';
+
 .login-background {
-  background-image: url(../assets/roads-bg-min.jpg);
+  background-image: url(../../assets/roads-bg-min.jpg);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
   height: 100vh;
   overflow-y: hidden;
 }
-
-.login-container {
-  padding: 30px;
-  overflow-y: hidden;
-}
-

@@ -1,5 +1,6 @@
 html, body{
-  height: 100%;
+  height: 100vh;
+  padding: 0;
 }
 
 $carnellianRed: #b31b1b;
@@ -22,3 +23,13 @@ $figma_green3: #6fcf97;
 $figma_blue1: #2f80ed;
 $figma_blue2: #2d9cd8;
 $figma_blue3: #56ccf2;
+
+.page-container {
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+.ui.container.grid.page-container {
+  margin: 0 !important;
+}
