@@ -28,8 +28,6 @@ router.get('/google/success', (req, res) => {
 
 // this route is just used to get the user basic info
 router.get('/user', (req, res, next) => {
-  console.log("req.user:")
-  console.log(req.user);
   if (req.user) {
     return res.json({ user: req.user.Item })
   } else {
@@ -67,7 +65,7 @@ router.post('/logout', (req, res) => {
 
 router.post('/signup', (req, res) => {
   console.log(req.body);
-  const { username, password } = req.body;
+  const { username, password, firstName, lastName } = req.body;
   const hashedPassword = bcrypt.hashSync(password, 10);
   const getParams = {
     TableName: process.env.AWS_DYNAMODB_USER_TABLENAME,
@@ -79,7 +77,9 @@ router.post('/signup', (req, res) => {
     TableName: process.env.AWS_DYNAMODB_USER_TABLENAME,
     Item: {
       email: username,
-      password: hashedPassword
+      password: hashedPassword,
+      firstName: firstName,
+      lastName: lastName
     }
   }
 

@@ -9,6 +9,8 @@ interface IRegisterProps {
   errorMsg: string;
 }
 interface IRegisterState {
+  firstName: string;
+  lastName: string;
   username: string;
   password: string;
   confirmPassword: string;
@@ -19,6 +21,8 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
   public constructor(props: any) {
     super(props);
     this.state = {
+      firstName: '',
+      lastName: '',
       username: '',
       password: '',
       confirmPassword: ''
@@ -45,27 +49,36 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
               </Message>
           }
           <Form>
-            <Form.Field>
-              <label>Cornell Email</label>
-              <input
-                placeholder='NetID@cornell.edu'
-                value={this.state.username}
-                name='username'
-                onChange={this.handleChange}
-              />
-            </Form.Field>
-            <Form.Field>
-              <label>Password</label>
-              <input
-                type='password'
-                placeholder='ADALift Password'
-                name='password'
-                onChange={this.handleChange}
-              />
-            </Form.Field>
+            <Form.Group widths='equal'>
+              <Form.Input fluid
+                label='Preferred first name'
+                placeholder='First name'
+                value={this.state.firstName}
+                name='firstName'
+                onChange={this.handleChange} />
+              <Form.Input fluid
+                label='Last name'
+                placeholder='Last name'
+                value={this.state.lastName}
+                name='lastName'
+                onChange={this.handleChange} />
+            </Form.Group>
+            <Form.Input
+              label='Cornell Email'
+              placeholder='NetID@cornell.edu'
+              value={this.state.username}
+              name='username'
+              onChange={this.handleChange} />
+            <Form.Input
+              label='Password'
+              type='password'
+              placeholder='ADALift Password'
+              name='password'
+              onChange={this.handleChange}
+            />
             <Button type='submit' onClick={this.handleSubmit}>Register</Button>
           </Form>
-          <Segment>
+          <Segment color='blue'>
             <p>
               Please note that you will have to wait for your account to be approved
               for rides by our dispatchers before you can request rides.
@@ -86,7 +99,10 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
   private handleSubmit(event) {
     this.props.handleRegisterRequest({
       username: this.state.username,
-      password: this.state.password
+      password: this.state.password,
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      accountType: 'rider'
     });
   }
 
