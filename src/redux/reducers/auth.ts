@@ -7,13 +7,17 @@ import {
   LOCAL_LOGIN_FAILURE,
   LOCAL_REGISTER_REQUEST,
   LOCAL_REGISTER_SUCCESS,
-  LOCAL_REGISTER_FAILURE
+  LOCAL_REGISTER_FAILURE,
+  LOGOUT_REQUEST,
+  LOGOUT_FAILURE,
+  LOGOUT_SUCCESS
 } from "../actionTypes";
 
 
 const initialState = {
   checkingLogin: true,
   loggingIn: false,
+  loggingOut: false,
   loggedIn: false,
   user: null,
   registerErrorMsg: "",
@@ -91,6 +95,23 @@ const authReducer = (state = initialState, action: any) => {
         loggedIn: false,
         user: null,
         registerErrorMsg: action.payload.err
+      }
+    case LOGOUT_REQUEST:
+      return {
+        ...state,
+        loggingOut: true
+      }
+    case LOGOUT_FAILURE:
+      return {
+        ...state,
+        loggingOut: false,
+        user: null
+      }
+    case LOGOUT_SUCCESS:
+      return {
+        ...state,
+        loggingOut: false,
+        user: null
       }
     default:
       return state;

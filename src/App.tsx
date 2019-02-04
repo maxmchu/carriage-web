@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './styles/App.scss';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -7,8 +7,11 @@ import ConditionalRoute from "./components/ConditionalRoute";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import Welcome from "./components/Welcome";
+import RequestForm from "./components/RequestForm";
 import { handleCheckUserLoggedInRequest } from './redux/actions';
 import Register from './components/Register';
+import { AccountType } from './types';
+import Logout from './components/Logout';
 
 interface IAppProps {
   checkingLogin: boolean;
@@ -19,7 +22,7 @@ interface IAppProps {
 interface IAppState {
 }
 
-class App extends Component<IAppProps, IAppState> {
+class App extends React.Component<IAppProps, IAppState> {
 
   public constructor(props: IAppProps) {
     super(props);
@@ -53,6 +56,12 @@ class App extends Component<IAppProps, IAppState> {
               component={Dashboard}
               routeCondition={this.props.loggedIn}
               redirectTo="/login" />
+            <Route exact path="/logout" component={Logout} />
+            <ConditionalRoute exact
+              path={`/dashboard/request`}
+              component={RequestForm}
+              routeCondition={this.props.user && this.props.loggedIn && this.props.user.accountType == AccountType.RIDER}
+              redirectTo={"/dashboard"} />
           </Switch>
         </Router>
       </div>

@@ -34,7 +34,7 @@ class Welcome extends React.Component<IWelcomeProps, IWelcomeState> {
               Hours of operation for spring/fall semester when classes are in
               session are <b>7:45am–10:00pm, Monday–Friday</b>. When classes are not in
               session and during the summer, the hours are 7:45am –4:45pm.
-              The CULift does not operate on the weekends.
+              The ADALift does not operate on the weekends.
             </p>
             <Header as={"h3"}>Need to Login?</Header>
             <Button as={Link} to="/login/" color='blue' basic>Sign into ADALift here</Button>

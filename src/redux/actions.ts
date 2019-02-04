@@ -10,7 +10,10 @@ import {
   LOCAL_REGISTER_FAILURE,
   GOOGLE_OAUTH2_REQUEST,
   GOOGLE_OAUTH2_SUCCESS,
-  GOOGLE_OAUTH2_FAILURE
+  GOOGLE_OAUTH2_FAILURE,
+  LOGOUT_REQUEST,
+  LOGOUT_SUCCESS,
+  LOGOUT_FAILURE
 } from "./actionTypes";
 
 import axios from "axios";
@@ -170,6 +173,41 @@ export function handleGoogleOauth2Request() {
       error => {
         console.error("An error occurred: ", error);
         dispatch(googleOauth2Failure(error));
+      }
+    );
+  }
+}
+
+export function logoutRequest(): IAction {
+  return {
+    type: LOGOUT_REQUEST
+  }
+}
+
+export function logoutSuccess(data): IAction {
+  return {
+    type: LOGOUT_SUCCESS,
+    payload: data
+  }
+}
+
+export function logoutFailure(err): IAction {
+  return {
+    type: LOGOUT_FAILURE,
+    payload: err
+  }
+}
+
+export function handleLogoutRequest() {
+  return function (dispatch: any) {
+    dispatch(logoutRequest());
+    axios.post('/auth/logout').then(
+      response => {
+        dispatch(logoutSuccess(response.data));
+      },
+      error => {
+        console.error("An error occurred: ", error);
+        dispatch(logoutFailure(error));
       }
     );
   }
