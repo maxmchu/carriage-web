@@ -13,6 +13,8 @@ interface IDashboardProps {
   lastName: string;
   email: string;
   accountType: AccountType
+  loggedIn: boolean;
+  match: any
 }
 
 interface IDashboardState {
@@ -29,7 +31,13 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
           <Header as={"h1"}>Upcoming Rides</Header>
           {
             (this.props.accountType == AccountType.RIDER) ?
-              <Button basic color='blue' style={{ marginBottom: "10px" }}>Request a ride</Button> : null
+              <Button basic
+                color='blue'
+                style={{ marginBottom: "10px" }}
+                as={Link}
+                to={"/dashboard/request"}>
+                Request a ride
+              </Button> : null
           }
           <p>You have PLACEHOLDER upcoming rides.</p>
         </Container>
@@ -40,12 +48,13 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 }
 
 function mapStateToProps(state) {
-  const { firstName, lastName, email, accountType } = state.auth.user;
+  const { firstName, lastName, email, accountType, loggedIn } = state.auth.user;
   return {
     "firstName": firstName,
     "lastName": lastName,
     "email": email,
-    "accountType": accountType
+    "accountType": accountType,
+    "loggedIn": loggedIn
   };
 }
 

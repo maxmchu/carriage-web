@@ -2,7 +2,7 @@ import * as React from 'react';
 import '../styles/App.scss';
 import { connect } from 'react-redux';
 
-import { Menu } from 'semantic-ui-react';
+import { Button, Menu } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { AccountType } from '../types';
 
@@ -11,23 +11,29 @@ interface IDashboardNavProps {
   accountType: AccountType;
 }
 
-interface IDashboardStateProps {
+interface IDashboardNavState {
 
 }
 
-class DashboardNavigation extends React.Component<IDashboardNavProps, IDashboardStateProps> {
+class DashboardNavigation extends React.Component<IDashboardNavProps, IDashboardNavState> {
+
+  public constructor(props) {
+    super(props);
+  }
 
   public render() {
     return (
       <Menu size='huge'>
         <Menu.Item>
-          <Link to={"/dashboard"}>CULift</Link>
+          <Link to={"/dashboard"}>ADALift</Link>
         </Menu.Item>
         <Menu.Menu position='right'>
           <Menu.Item>
             <p>Logged in as <span style={{ fontWeight: "bold" }}>{this.props.firstName}</span></p>
           </Menu.Item>
-          <Menu.Item>Log off</Menu.Item>
+          <Menu.Item>
+            <Button basic as={Link} to={"/logout"}>Log out</Button>
+          </Menu.Item>
         </Menu.Menu>
       </Menu>
     );

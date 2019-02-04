@@ -2,6 +2,10 @@ import * as React from 'react';
 import '../styles/App.scss';
 import { connect } from 'react-redux';
 
+import { Container, Header } from 'semantic-ui-react';
+
+import DashboardNav from './DashboardNav';
+
 interface IRequestFormProps {
 
 }
@@ -14,7 +18,12 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
 
   public render() {
     return (
-      <div></div>
+      <div>
+        <DashboardNav />
+        <Container>
+          <Header as={"h1"}>Request a Ride</Header>
+        </Container>
+      </div>
     )
   }
 
