@@ -7,6 +7,8 @@ import store from './redux/index';
 import * as serviceWorker from './serviceWorker';
 import 'typeface-roboto';
 import 'semantic-ui-css/semantic.min.css';
+import 'react-dates/initialize';
+import 'react-dates/lib/css/_datepicker.css';
 
 ReactDOM.render(
   <Provider store={store}>

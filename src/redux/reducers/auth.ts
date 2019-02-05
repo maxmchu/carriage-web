@@ -59,13 +59,25 @@ const authReducer = (state = initialState, action: any) => {
         loginErrorMsg: ""
       }
     case LOCAL_LOGIN_SUCCESS:
-      return {
-        ...state,
-        loggingIn: false,
-        loggedIn: true,
-        user: action.payload,
-        loginErrorMsg: ""
+      if (action.payload.message || !action.payload.user) {
+        return {
+          ...state,
+          loggingIn: false,
+          loggedIn: false,
+          user: null,
+          loginErrorMsg: (action.payload.message == "Missing credentials") ?
+            "Missing username or password." : action.payload.message
+        }
+      } else {
+        return {
+          ...state,
+          loggingIn: false,
+          loggedIn: true,
+          user: action.payload,
+          loginErrorMsg: ""
+        }
       }
+
     case LOCAL_LOGIN_FAILURE:
       return {
         ...state,
@@ -99,18 +111,20 @@ const authReducer = (state = initialState, action: any) => {
     case LOGOUT_REQUEST:
       return {
         ...state,
-        loggingOut: true
+        loggingOut: true,
       }
     case LOGOUT_FAILURE:
       return {
         ...state,
         loggingOut: false,
+        loggedIn: false,
         user: null
       }
     case LOGOUT_SUCCESS:
       return {
         ...state,
         loggingOut: false,
+        loggedIn: false,
         user: null
       }
     default:
