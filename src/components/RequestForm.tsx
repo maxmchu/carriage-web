@@ -2,7 +2,7 @@ import * as React from 'react';
 import '../styles/App.scss';
 import { connect } from 'react-redux';
 
-import { Button, Container, Form, Header, Grid } from 'semantic-ui-react';
+import { Button, Container, Form, Header, Grid, Checkbox } from 'semantic-ui-react';
 import { Moment } from 'moment';
 const moment = require('moment');
 import { SingleDatePicker } from 'react-dates';
@@ -46,7 +46,7 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
           <Form>
             <Header as={"h2"}>Ride Details</Header>
             <Form.Field>
-              <label>Date</label>
+              <h3>Date</h3>
               <SingleDatePicker
                 date={this.state.date}
                 onDateChange={this.onDateChange}
@@ -60,6 +60,10 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
             <Grid stackable columns='equal'>
               <Grid.Column>
                 <Header as={"h3"}>Pickup</Header>
+                <Form.Group>
+                  <Form.Radio label="On-campus" />
+                  <Form.Radio label="Off-campus" />
+                </Form.Group>
                 <Form.Group>
                   <Form.Input
                     label='Time'
@@ -75,6 +79,10 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
               </Grid.Column>
               <Grid.Column>
                 <Header as={"h3"}>Dropoff</Header>
+                <Form.Group>
+                  <Form.Radio label="On-campus" />
+                  <Form.Radio label="Off-campus" />
+                </Form.Group>
                 <Form.Group>
                   <Form.Input
                     label='Time'
