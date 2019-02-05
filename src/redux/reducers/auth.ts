@@ -59,7 +59,7 @@ const authReducer = (state = initialState, action: any) => {
         loginErrorMsg: ""
       }
     case LOCAL_LOGIN_SUCCESS:
-      if (action.payload.message || !action.payload.user) {
+      if (action.payload.message) {
         return {
           ...state,
           loggingIn: false,
