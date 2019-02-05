@@ -37,6 +37,7 @@ router.get('/user', (req, res, next) => {
 
 router.post('/login', function (req, res, next) {
   passport.authenticate('local', function (err, user, info) {
+    console.log(user);
     if (err) { return next(err); }
     if (!user) {
       return res.send(info);
@@ -70,17 +71,21 @@ router.post('/signup', (req, res) => {
   const getParams = {
     TableName: process.env.AWS_DYNAMODB_USER_TABLENAME,
     Key: {
-      email: username
+      email: username.toLowerCase()
     }
   }
+
+  const newUser = {
+    email: username.toLowerCase(),
+    password: hashedPassword,
+    firstName: firstName,
+    lastName: lastName,
+    accountType: 'rider'
+  }
+
   const putParams = {
     TableName: process.env.AWS_DYNAMODB_USER_TABLENAME,
-    Item: {
-      email: username,
-      password: hashedPassword,
-      firstName: firstName,
-      lastName: lastName
-    }
+    Item: newUser
   }
 
   documentClient.get(getParams, function (err, data) {
@@ -94,11 +99,7 @@ router.post('/signup', (req, res) => {
             console.error(err, err.stack);
             return res.json({ err: 'error saving user' });
           } else {
-            console.log("registering: ")
-            const newUser = {
-              email: username,
-              password: hashedPassword
-            }
+            console.log("registering: ");
             console.log(newUser);
             return res.json(newUser);
           }

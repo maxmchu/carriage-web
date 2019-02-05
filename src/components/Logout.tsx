@@ -7,11 +7,7 @@ interface ILogoutProps {
   handleLogout: () => any;
 }
 
-interface ILogoutState {
-
-}
-
-class Logout extends React.Component<ILogoutProps, ILogoutState> {
+class Logout extends React.Component<ILogoutProps> {
 
   public constructor(props) {
     super(props);

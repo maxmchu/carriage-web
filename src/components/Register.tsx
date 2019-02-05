@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react';
 import { handleLocalRegisterRequest } from '../redux/actions';
 import { Link } from 'react-router-dom';
+import { capitalize } from 'lodash';
 
 interface IRegisterProps {
   handleRegisterRequest: (registerData: any) => any;
@@ -29,6 +30,7 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleName = this.handleName.bind(this);
   }
 
   public render(): JSX.Element {
@@ -96,12 +98,20 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
     })
   }
 
+  private handleName(name) {
+    if (name.split("-").length == 1) {
+      return capitalize(name);
+    } else {
+      return (name.split("-").map(n => capitalize(n))).join('-');
+    }
+  }
+
   private handleSubmit(event) {
     this.props.handleRegisterRequest({
       username: this.state.username,
       password: this.state.password,
-      firstName: this.state.firstName,
-      lastName: this.state.lastName,
+      firstName: this.handleName(this.state.firstName),
+      lastName: capitalize(this.state.lastName),
       accountType: 'rider'
     });
   }
