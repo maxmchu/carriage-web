@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 import { handleFetchLocationsRequest } from '../redux/actions';
 import { RideLocation } from '../types';
 
-import { debounce, escapeRegExp, filter } from 'lodash';
+import { capitalize, debounce, escapeRegExp, filter } from 'lodash';
 
 
 interface IRequestFormProps {
@@ -30,7 +30,9 @@ interface IRequestFormState {
   pickupLocationSuggestions: RideLocation[];
   dropoffLocationSuggestions: RideLocation[];
   loadingPickup: boolean;
+  loadingDropoff: boolean;
   pickupLocationId: number;
+  dropoffLocationId: number;
 }
 
 class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> {
@@ -47,14 +49,18 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
       pickupLocationSuggestions: [],
       dropoffLocationSuggestions: [],
       loadingPickup: false,
-      pickupLocationId: -1
+      loadingDropoff: false,
+      pickupLocationId: -1,
+      dropoffLocationId: -1
     };
     this.onDateChange = this.onDateChange.bind(this);
     this.onFocusChange = this.onFocusChange.bind(this);
     this.onChange = this.onChange.bind(this);
     this.resetPickupComponent = this.resetPickupComponent.bind(this);
     this.handlePickupResultSelect = this.handlePickupResultSelect.bind(this);
-    this.handlePickupSearchChange = this.handlePickupSearchChange.bind(this);
+    this.handleSearchChange = this.handleSearchChange.bind(this);
+    this.resetDropoffComponent = this.resetDropoffComponent.bind(this);
+    this.handleDropoffResultSelect = this.handleDropoffResultSelect.bind(this);
   }
 
   public componentDidMount() {
@@ -97,9 +103,10 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
                     <Search
                       loading={this.state.loadingPickup}
                       onResultSelect={this.handlePickupResultSelect}
-                      onSearchChange={debounce(this.handlePickupSearchChange, 200, { leading: true })}
+                      onSearchChange={debounce(this.handleSearchChange, 200, { leading: true })}
                       results={this.state.pickupLocationSuggestions}
                       value={this.state.pickupLocationString}
+                      name="pickupLocationString"
                     />
                   </Form.Field>
                 </Form.Group>
@@ -114,9 +121,17 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
                     value={this.state.dropoffTime}
                     onChange={this.onChange}
                   />
-                  <Form.Input
-                    label='Dropoff Location'
-                  />
+                  <Form.Field>
+                    <label>Dropoff Location</label>
+                    <Search
+                      loading={this.state.loadingDropoff}
+                      onResultSelect={this.handleDropoffResultSelect}
+                      onSearchChange={debounce(this.handleSearchChange, 200, { leading: true })}
+                      results={this.state.dropoffLocationSuggestions}
+                      value={this.state.dropoffLocationString}
+                      name="dropoffLocationString"
+                    />
+                  </Form.Field>
                 </Form.Group>
               </Grid.Column>
             </Grid>
@@ -157,35 +172,61 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
 
   private handlePickupResultSelect(e, { result }) {
     this.setState({
-      ...this.state,
       pickupLocationId: result.id,
       pickupLocationString: result.title
     });
   }
 
-  private handlePickupSearchChange(e, { value }) {
+  private resetDropoffComponent() {
     this.setState({
-      loadingPickup: true,
-      pickupLocationString: value
+      loadingDropoff: false,
+      dropoffLocationSuggestions: [],
+      dropoffLocationString: ''
+    });
+  }
+
+  private handleDropoffResultSelect(e, { result }) {
+    this.setState({
+      dropoffLocationId: result.id,
+      dropoffLocationString: result.title
+    })
+  }
+
+  private handleSearchChange(e, { value }) {
+    const targetField = e.target.name;
+    const loadingString = "loading" + capitalize(targetField.replace("LocationString", ""));
+    console.log(loadingString);
+    this.setState({
+      ...this.state,
+      [loadingString]: true,
+      [targetField]: value
     })
     setTimeout(() => {
-      if (this.state.pickupLocationString.length < 1) return this.resetPickupComponent()
+      if (this.state[targetField].length < 1) {
+        if (targetField.replace("LocationString", "") == "pickup") {
+          return this.resetPickupComponent();
+        } else {
+          return this.resetDropoffComponent();
+        }
+      }
 
-      const re = new RegExp(escapeRegExp(this.state.pickupLocationString), 'i')
+      const re = new RegExp(escapeRegExp(this.state[targetField]), 'i')
       const isMatch = result => re.test(result.title)
 
       let matches = filter(this.props.locations, isMatch);
       if (matches.length == 0) {
         matches = [{
-          title: this.state.pickupLocationString,
-          description: this.state.pickupLocationString,
+          title: this.state[targetField],
+          description: this.state[targetField],
           id: -1
         }]
       }
 
+      const suggestionsString = targetField.replace("String", "Suggestions");
       this.setState({
-        loadingPickup: false,
-        pickupLocationSuggestions: matches,
+        ...this.state,
+        [loadingString]: false,
+        [suggestionsString]: matches,
       })
     }, 100)
   }
