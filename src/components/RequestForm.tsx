@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 import { handleFetchLocationsRequest } from '../redux/actions';
 import { RideLocation } from '../types';
 
-import { capitalize, debounce, escapeRegExp, filter } from 'lodash';
+import { capitalize, debounce, escapeRegExp, filter, findIndex } from 'lodash';
 
 
 interface IRequestFormProps {
@@ -33,6 +33,9 @@ interface IRequestFormState {
   loadingDropoff: boolean;
   pickupLocationId: number;
   dropoffLocationId: number;
+  needsWheelchair: boolean;
+  needsExtraSpace: boolean;
+  submitEnabled: boolean;
 }
 
 class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> {
@@ -40,7 +43,7 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
   public constructor(props) {
     super(props);
     this.state = {
-      date: moment(),
+      date: moment().endOf("day"),
       focused: false,
       pickupTime: "08:00",
       dropoffTime: "08:30",
@@ -51,16 +54,22 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
       loadingPickup: false,
       loadingDropoff: false,
       pickupLocationId: -1,
-      dropoffLocationId: -1
+      dropoffLocationId: -1,
+      needsWheelchair: false,
+      needsExtraSpace: false,
+      submitEnabled: false
     };
     this.onDateChange = this.onDateChange.bind(this);
     this.onFocusChange = this.onFocusChange.bind(this);
-    this.onChange = this.onChange.bind(this);
+    this.onTimeChange = this.onTimeChange.bind(this);
+    this.onWheelchairChange = this.onWheelchairChange.bind(this);
+    this.onExtraSpaceChange = this.onExtraSpaceChange.bind(this);
     this.resetPickupComponent = this.resetPickupComponent.bind(this);
     this.handlePickupResultSelect = this.handlePickupResultSelect.bind(this);
     this.handleSearchChange = this.handleSearchChange.bind(this);
     this.resetDropoffComponent = this.resetDropoffComponent.bind(this);
     this.handleDropoffResultSelect = this.handleDropoffResultSelect.bind(this);
+    this.isReadyToSubmit = this.isReadyToSubmit.bind(this);
   }
 
   public componentDidMount() {
@@ -96,7 +105,7 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
                     type='time'
                     name='pickupTime'
                     value={this.state.pickupTime}
-                    onChange={this.onChange}
+                    onChange={this.onTimeChange}
                   />
                   <Form.Field>
                     <label>Pickup Location</label>
@@ -119,7 +128,7 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
                     type='time'
                     name='dropoffTime'
                     value={this.state.dropoffTime}
-                    onChange={this.onChange}
+                    onChange={this.onTimeChange}
                   />
                   <Form.Field>
                     <label>Dropoff Location</label>
@@ -136,11 +145,17 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
               </Grid.Column>
             </Grid>
             <Form.Checkbox
-              label='Check this box if you are a wheelchair user.' />
+              label='Check this box if you are a wheelchair user.'
+              checked={this.state.needsWheelchair}
+              onChange={this.onWheelchairChange}
+            />
             <Form.Checkbox
-              label='Check this box if you need extra space (for example, if you have a leg injury and must use a seat to keep your leg straight).' />
+              label='Check this box if you need extra space (for example, if you have a leg injury and must use an additional seat to keep your leg straight).'
+              checked={this.state.needsExtraSpace}
+              onChange={this.onExtraSpaceChange}
+            />
             <Button basic color='blue' as={Link} to={"/dashboard"}>Cancel Ride Request</Button>
-            <Button basic color='green'>Submit Ride Request</Button>
+            <Button basic color='green' disabled={!this.state.submitEnabled}>Submit Ride Request</Button>
           </Form>
         </Container>
       </div>
@@ -148,32 +163,51 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
   }
 
   private onDateChange(date) {
-    this.setState({ date });
+    this.setState({
+      date,
+      submitEnabled: this.isReadyToSubmit()
+    });
   }
 
   private onFocusChange(focused) {
     this.setState(focused);
   }
 
-  private onChange(event) {
+  private onTimeChange(event) {
     this.setState({
       ...this.state,
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
+      submitEnabled: this.isReadyToSubmit()
     })
+  }
+
+  private onWheelchairChange(e) {
+    this.setState({
+      needsWheelchair: !this.state.needsWheelchair,
+    });
+  }
+
+  private onExtraSpaceChange(e) {
+    this.setState({
+      needsExtraSpace: !this.state.needsExtraSpace
+    });
   }
 
   private resetPickupComponent() {
     this.setState({
       loadingPickup: false,
       pickupLocationSuggestions: [],
-      pickupLocationString: ''
+      pickupLocationString: '',
+      pickupLocationId: -1,
+      submitEnabled: this.isReadyToSubmit()
     });
   }
 
   private handlePickupResultSelect(e, { result }) {
     this.setState({
       pickupLocationId: result.id,
-      pickupLocationString: result.title
+      pickupLocationString: result.title,
+      submitEnabled: this.isReadyToSubmit()
     });
   }
 
@@ -181,29 +215,35 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
     this.setState({
       loadingDropoff: false,
       dropoffLocationSuggestions: [],
-      dropoffLocationString: ''
+      dropoffLocationString: '',
+      dropoffLocationId: -1,
+      submitEnabled: this.isReadyToSubmit()
     });
   }
 
   private handleDropoffResultSelect(e, { result }) {
     this.setState({
       dropoffLocationId: result.id,
-      dropoffLocationString: result.title
+      dropoffLocationString: result.title,
+      submitEnabled: this.isReadyToSubmit()
     })
   }
 
   private handleSearchChange(e, { value }) {
     const targetField = e.target.name;
-    const loadingString = "loading" + capitalize(targetField.replace("LocationString", ""));
-    console.log(loadingString);
+    const pickupDropoff = targetField.replace("LocationString", "");
+    const loadingString = "loading" + capitalize(pickupDropoff);
+    const idString = pickupDropoff + "LocationId";
     this.setState({
       ...this.state,
       [loadingString]: true,
-      [targetField]: value
+      [targetField]: value,
+      [idString]: -1,
+      submitEnabled: this.isReadyToSubmit()
     })
     setTimeout(() => {
       if (this.state[targetField].length < 1) {
-        if (targetField.replace("LocationString", "") == "pickup") {
+        if (pickupDropoff == "pickup") {
           return this.resetPickupComponent();
         } else {
           return this.resetDropoffComponent();
@@ -222,13 +262,26 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
         }]
       }
 
-      const suggestionsString = targetField.replace("String", "Suggestions");
+      const suggestionsString = pickupDropoff + "LocationSuggestions";
       this.setState({
         ...this.state,
         [loadingString]: false,
         [suggestionsString]: matches,
-      })
+        submitEnabled: this.isReadyToSubmit()
+      });
     }, 100)
+  }
+
+  private isReadyToSubmit() {
+    const timeRe = new RegExp(/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/);
+    const conditions = [
+      this.state.date.diff(moment()) > 0,
+      timeRe.test(this.state.pickupTime),
+      timeRe.test(this.state.dropoffTime),
+      this.state.pickupLocationString.length > 0,
+      this.state.dropoffLocationString.length > 0
+    ];
+    return (findIndex(conditions, (i) => { return i == false }) == -1);
   }
 
 }
