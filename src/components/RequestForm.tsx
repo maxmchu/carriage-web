@@ -61,10 +61,6 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
               <Grid.Column>
                 <Header as={"h3"}>Pickup</Header>
                 <Form.Group>
-                  <Form.Radio label="On-campus" />
-                  <Form.Radio label="Off-campus" />
-                </Form.Group>
-                <Form.Group>
                   <Form.Input
                     label='Time'
                     type='time'
@@ -79,10 +75,6 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
               </Grid.Column>
               <Grid.Column>
                 <Header as={"h3"}>Dropoff</Header>
-                <Form.Group>
-                  <Form.Radio label="On-campus" />
-                  <Form.Radio label="Off-campus" />
-                </Form.Group>
                 <Form.Group>
                   <Form.Input
                     label='Time'
