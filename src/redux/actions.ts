@@ -239,6 +239,18 @@ export function fetchLocationsFailure(err: any): IAction {
 export function handleFetchLocationsRequest() {
   return function (dispatch: any) {
     dispatch(fetchLocationsRequest());
-
+    axios.get('/db/locations').then(
+      response => {
+        if (response.data.err) {
+          dispatch(fetchLocationsFailure(response.data.err));
+        } else {
+          dispatch(fetchLocationsSuccess(response.data));
+        }
+      },
+      err => {
+        console.error("An error occurred: ", err);
+        dispatch(fetchLocationsFailure(err));
+      }
+    )
   }
 }

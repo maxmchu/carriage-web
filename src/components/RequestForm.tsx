@@ -2,17 +2,22 @@ import * as React from 'react';
 import '../styles/App.scss';
 import { connect } from 'react-redux';
 
-import { Button, Container, Form, Header, Grid, Checkbox } from 'semantic-ui-react';
+import { Button, Container, Form, Header, Grid, Search } from 'semantic-ui-react';
 import { Moment } from 'moment';
 const moment = require('moment');
 import { SingleDatePicker } from 'react-dates';
 
 import DashboardNav from './DashboardNav';
 import { Link } from 'react-router-dom';
+import { handleFetchLocationsRequest } from '../redux/actions';
+import { RideLocation } from '../types';
+
+import { debounce, escapeRegExp, filter } from 'lodash';
 
 
 interface IRequestFormProps {
-
+  fetchLocations: () => any;
+  locations: any[];
 }
 
 interface IRequestFormState {
@@ -20,6 +25,12 @@ interface IRequestFormState {
   focused: boolean;
   pickupTime: any;
   dropoffTime: any;
+  pickupLocationString: string;
+  dropoffLocationString: string;
+  pickupLocationSuggestions: RideLocation[];
+  dropoffLocationSuggestions: RideLocation[];
+  loadingPickup: boolean;
+  pickupLocationId: number;
 }
 
 class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> {
@@ -30,11 +41,24 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
       date: moment(),
       focused: false,
       pickupTime: "08:00",
-      dropoffTime: "08:30"
+      dropoffTime: "08:30",
+      pickupLocationString: "",
+      dropoffLocationString: "",
+      pickupLocationSuggestions: [],
+      dropoffLocationSuggestions: [],
+      loadingPickup: false,
+      pickupLocationId: -1
     };
     this.onDateChange = this.onDateChange.bind(this);
     this.onFocusChange = this.onFocusChange.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.resetPickupComponent = this.resetPickupComponent.bind(this);
+    this.handlePickupResultSelect = this.handlePickupResultSelect.bind(this);
+    this.handlePickupSearchChange = this.handlePickupSearchChange.bind(this);
+  }
+
+  public componentDidMount() {
+    this.props.fetchLocations();
   }
 
   public render() {
@@ -68,9 +92,16 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
                     value={this.state.pickupTime}
                     onChange={this.onChange}
                   />
-                  <Form.Input
-                    label='Pickup Location'
-                  />
+                  <Form.Field>
+                    <label>Pickup Location</label>
+                    <Search
+                      loading={this.state.loadingPickup}
+                      onResultSelect={this.handlePickupResultSelect}
+                      onSearchChange={debounce(this.handlePickupSearchChange, 200, { leading: true })}
+                      results={this.state.pickupLocationSuggestions}
+                      value={this.state.pickupLocationString}
+                    />
+                  </Form.Field>
                 </Form.Group>
               </Grid.Column>
               <Grid.Column>
@@ -116,14 +147,72 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
     })
   }
 
+  private resetPickupComponent() {
+    this.setState({
+      loadingPickup: false,
+      pickupLocationSuggestions: [],
+      pickupLocationString: ''
+    });
+  }
+
+  private handlePickupResultSelect(e, { result }) {
+    this.setState({
+      ...this.state,
+      pickupLocationId: result.id,
+      pickupLocationString: result.title
+    });
+  }
+
+  private handlePickupSearchChange(e, { value }) {
+    this.setState({
+      loadingPickup: true,
+      pickupLocationString: value
+    })
+    setTimeout(() => {
+      if (this.state.pickupLocationString.length < 1) return this.resetPickupComponent()
+
+      const re = new RegExp(escapeRegExp(this.state.pickupLocationString), 'i')
+      const isMatch = result => re.test(result.title)
+
+      let matches = filter(this.props.locations, isMatch);
+      if (matches.length == 0) {
+        matches = [{
+          title: this.state.pickupLocationString,
+          description: this.state.pickupLocationString,
+          id: -1
+        }]
+      }
+
+      this.setState({
+        loadingPickup: false,
+        pickupLocationSuggestions: matches,
+      })
+    }, 100)
+  }
+
+}
+
+function convertLocationsToItems(locations: RideLocation[]) {
+  return locations.map(l => {
+    return {
+      title: l.location,
+      description: l.desc,
+      id: l.id
+    }
+  });
 }
 
 function mapStateToProps(state) {
-  return {};
+  const { locations } = state.db;
+  return {
+    locations: convertLocationsToItems(locations)
+  };
 }
 
 function mapDispatchToProps(dispatch) {
-  return {};
+  return {
+    fetchLocations: () => dispatch(handleFetchLocationsRequest())
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(RequestForm);
