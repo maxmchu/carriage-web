@@ -13,7 +13,10 @@ import {
   GOOGLE_OAUTH2_FAILURE,
   LOGOUT_REQUEST,
   LOGOUT_SUCCESS,
-  LOGOUT_FAILURE
+  LOGOUT_FAILURE,
+  FETCH_LOCATIONS_REQUEST,
+  FETCH_LOCATIONS_SUCCESS,
+  FETCH_LOCATIONS_FAILURE
 } from "./actionTypes";
 
 import axios from "axios";
@@ -210,5 +213,32 @@ export function handleLogoutRequest() {
         dispatch(logoutFailure(error));
       }
     );
+  }
+}
+
+export function fetchLocationsRequest(): IAction {
+  return {
+    type: FETCH_LOCATIONS_REQUEST
+  }
+}
+
+export function fetchLocationsSuccess(data: any): IAction {
+  return {
+    type: FETCH_LOCATIONS_SUCCESS,
+    payload: data
+  }
+}
+
+export function fetchLocationsFailure(err: any): IAction {
+  return {
+    type: FETCH_LOCATIONS_FAILURE,
+    payload: err
+  }
+}
+
+export function handleFetchLocationsRequest() {
+  return function (dispatch: any) {
+    dispatch(fetchLocationsRequest());
+
   }
 }
