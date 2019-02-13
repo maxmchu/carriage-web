@@ -29,6 +29,7 @@ router.get('/google/success', (req, res) => {
 // this route is just used to get the user basic info
 router.get('/user', (req, res, next) => {
   if (req.user) {
+    delete req.user.Item.password;
     return res.json({ user: req.user.Item })
   } else {
     return res.json({ user: null })

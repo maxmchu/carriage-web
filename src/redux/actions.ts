@@ -16,10 +16,14 @@ import {
   LOGOUT_FAILURE,
   FETCH_LOCATIONS_REQUEST,
   FETCH_LOCATIONS_SUCCESS,
-  FETCH_LOCATIONS_FAILURE
+  FETCH_LOCATIONS_FAILURE,
+  REQUEST_RIDE_REQUEST,
+  REQUEST_RIDE_SUCCESS,
+  REQUEST_RIDE_FAILURE
 } from "./actionTypes";
 
 import axios from "axios";
+import { RideRequest } from "../types";
 
 interface IAction {
   type: string;
@@ -242,6 +246,7 @@ export function handleFetchLocationsRequest() {
     axios.get('/db/locations').then(
       response => {
         if (response.data.err) {
+          console.error("An error occurred: ", response.data.err);
           dispatch(fetchLocationsFailure(response.data.err));
         } else {
           dispatch(fetchLocationsSuccess(response.data));
@@ -252,5 +257,45 @@ export function handleFetchLocationsRequest() {
         dispatch(fetchLocationsFailure(err));
       }
     )
+  }
+}
+
+export function requestRideRequest(data: RideRequest): IAction {
+  return {
+    type: REQUEST_RIDE_REQUEST,
+    payload: data
+  }
+}
+
+export function requestRideSuccess(data): IAction {
+  return {
+    type: REQUEST_RIDE_SUCCESS,
+    payload: data
+  }
+}
+
+export function requestRideFailure(err): IAction {
+  return {
+    type: REQUEST_RIDE_FAILURE,
+    payload: err
+  }
+}
+
+export function handleRequestRideRequest(data: RideRequest) {
+  return function (dispatch: any) {
+    dispatch(requestRideRequest(data));
+    axios.post('/rides/request', data).then(
+      response => {
+        if (response.data.err) {
+          dispatch(requestRideFailure(response.data.err));
+        } else {
+          dispatch(requestRideSuccess(response.data));
+        }
+      },
+      err => {
+        dispatch(requestRideFailure(err));
+        console.error("An error occurred: ", err);
+      }
+    );
   }
 }
