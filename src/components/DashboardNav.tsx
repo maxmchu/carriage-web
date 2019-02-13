@@ -23,7 +23,7 @@ class DashboardNavigation extends React.Component<IDashboardNavProps, IDashboard
 
   public render() {
     return (
-      <Menu size='huge'>
+      <Menu>
         <Menu.Item>
           <Link to={"/dashboard"}>ADALift</Link>
         </Menu.Item>

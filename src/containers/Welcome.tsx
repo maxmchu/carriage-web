@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Button, Grid, Header } from 'semantic-ui-react';
 
-import "../styles/components/welcome.scss";
+import "../styles/containers/welcome.scss";
 import { Link } from 'react-router-dom';
 
 interface IWelcomeProps {

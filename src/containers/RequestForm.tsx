@@ -7,7 +7,7 @@ import { Moment } from 'moment';
 const moment = require('moment');
 import { SingleDatePicker } from 'react-dates';
 
-import DashboardNav from './DashboardNav';
+import DashboardNav from '../components/DashboardNav';
 import { Link } from 'react-router-dom';
 import { handleFetchLocationsRequest, handleRequestRideRequest } from '../redux/actions';
 import { RideLocation, RideRequest } from '../types';

@@ -19,3 +19,8 @@ export interface RideRequest {
   dropoffLocationId: number;
   dropoffLocationString: string;
 }
+
+export enum RideStatus {
+  PENDING = 'pending', CONFIRMED = 'confirmed', REJECTED = 'rejected',
+  COMPLETED = 'completed', CANCELLED = 'cancelled'
+}

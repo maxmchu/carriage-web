@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Button, Grid, Header, Form, Message } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
-import '../styles/components/login.scss';
+import '../styles/containers/login.scss';
 
 import { handleLocalLoginRequest } from '../redux/actions';
 
