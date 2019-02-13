@@ -10,7 +10,7 @@ export interface RideLocation {
 
 export interface RideRequest {
   id: number;
-  userId: number;
+  userEmail: string;
   date: string;
   pickupTime: string;
   pickupLocationId: number;

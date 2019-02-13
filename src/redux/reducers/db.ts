@@ -10,7 +10,7 @@ const initialState = {
   locations: []
 }
 
-const dbReducer = (state = initialState, action: any) => {
+const dbReducer = (state = initialState, action) => {
   switch (action.type) {
 
     case FETCH_LOCATIONS_REQUEST:
