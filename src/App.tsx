@@ -4,14 +4,14 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import ConditionalRoute from "./components/ConditionalRoute";
-import Login from "./components/Login";
-import Dashboard from "./components/Dashboard";
-import Welcome from "./components/Welcome";
-import RequestForm from "./components/RequestForm";
+import Login from "./containers/Login";
+import Dashboard from "./containers/Dashboard";
+import Welcome from "./containers/Welcome";
+import RequestForm from "./containers/RequestForm";
 import { handleCheckUserLoggedInRequest } from './redux/actions';
-import Register from './components/Register';
+import Register from './containers/Register';
 import { AccountType } from './types';
-import Logout from './components/Logout';
+import Logout from './containers/Logout';
 
 interface IAppProps {
   checkingLogin: boolean;
