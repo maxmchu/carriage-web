@@ -317,7 +317,7 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
     if (this.isReadyToSubmit()) {
       const request: RideRequest = {
         id: -1,
-        userEmail: this.props.user.email,
+        riderEmail: this.props.user.email,
         date: this.state.date.format("YYYY-MM-DD"),
         pickupTime: this.state.pickupTime,
         pickupLocationId: this.state.pickupLocationId,

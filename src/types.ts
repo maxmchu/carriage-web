@@ -10,7 +10,7 @@ export interface RideLocation {
 
 export interface RideRequest {
   id: number;
-  userEmail: string;
+  riderEmail: string;
   date: string;
   pickupTime: string;
   pickupLocationId: number;
@@ -23,4 +23,23 @@ export interface RideRequest {
 export enum RideStatus {
   PENDING = 'pending', CONFIRMED = 'confirmed', REJECTED = 'rejected',
   COMPLETED = 'completed', CANCELLED = 'cancelled'
+}
+
+export interface DriverInfo {
+  name: string;
+  phone: string;
+}
+
+export interface Ride {
+  id: number;
+  riderEmail: string;
+  date: string;
+  pickupTime: string;
+  pickupLocationId: number;
+  pickupLocationString: string;
+  dropoffTime: string;
+  dropoffLocationId: number;
+  dropoffLocationString: string;
+  status: RideStatus;
+  driver?: DriverInfo;
 }

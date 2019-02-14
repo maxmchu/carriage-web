@@ -9,6 +9,8 @@ import '../styles/containers/dashboard.scss';
 
 import { AccountType } from '../types';
 import DashboardNav from '../components/DashboardNav';
+import { resetRequestRideForm } from '../redux/actions';
+import UpcomingRides from '../components/UpcomingRides';
 
 interface IDashboardProps {
   firstName: string;
@@ -16,7 +18,7 @@ interface IDashboardProps {
   email: string;
   accountType: AccountType
   loggedIn: boolean;
-  match: any
+  resetRideForm: () => any;
 }
 
 interface IDashboardState {
@@ -24,6 +26,10 @@ interface IDashboardState {
 }
 
 class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
+
+  public componentDidMount() {
+    this.props.resetRideForm();
+  }
 
   public render() {
     return (
@@ -41,36 +47,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
                 Request a ride
               </Button> : null
           }
-          <p>You have PLACEHOLDER upcoming rides.</p>
-          <div className="dashboard-rides-container">
-            <Card>
-              <Card.Content>
-                <Card.Header content={"February 2nd, 2019"} />
-                <Card.Meta content={"Pending"} />
-              </Card.Content>
-              <Card.Content>
-                <Card.Header content={"8:45 am pickup"} />
-                <Card.Description content={"108 Eddy St"} />
-              </Card.Content>
-              <Card.Content>
-                <Card.Header content={"9:00 am dropoff"} />
-                <Card.Description content={"Gates Hall"} />
-              </Card.Content>
-              <Card.Content>
-                <Card.Header>Your Driver</Card.Header>
-                <Card.Description>
-                  <Item.Group>
-                    <Item>
-                      <Item.Content verticalAlign='middle'>
-                        <Item.Header>John Doe</Item.Header>
-                        <Item.Description>(607) 555-5555</Item.Description>
-                      </Item.Content>
-                    </Item>
-                  </Item.Group>
-                </Card.Description>
-              </Card.Content>
-            </Card>
-          </div>
+          <UpcomingRides />
         </Container>
       </div>
 
@@ -90,7 +67,9 @@ function mapStateToProps(state) {
 }
 
 function matchDispatchToProps(dispatch) {
-  return {};
+  return {
+    resetRideForm: () => dispatch(resetRequestRideForm())
+  };
 }
 
 export default connect(mapStateToProps, matchDispatchToProps)(Dashboard);
