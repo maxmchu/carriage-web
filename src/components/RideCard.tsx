@@ -4,19 +4,18 @@ import '../styles/App.scss';
 import { Card, Item, SemanticCOLORS } from 'semantic-ui-react';
 
 import '../styles/components/ridecard.scss';
-import { RideStatus } from '../types';
+import { RideStatus, DriverInfo } from '../types';
 import { capitalize } from 'lodash';
 const moment = require('moment');
 
 interface IRideCardProps {
   date: string;
-  rideStatus: RideStatus;
+  status: RideStatus;
   pickupTime: string;
-  pickupLocation: string;
+  pickupLocationString: string;
   dropoffTime: string;
-  dropoffLocation: string;
-  driverName?: string;
-  driverPhone?: string;
+  dropoffLocationString: string;
+  driver?: DriverInfo;
 }
 
 class RideCard extends React.PureComponent<IRideCardProps> {
@@ -29,31 +28,31 @@ class RideCard extends React.PureComponent<IRideCardProps> {
 
   public render() {
     return (
-      <Card color={this.statusColor(this.props.rideStatus)}>
+      <Card color={this.statusColor(this.props.status)}>
         <Card.Content>
-          <Card.Header content={moment(this.props.date).format("MMMM Do YY")} />
+          <Card.Header content={moment(this.props.date).format("MMMM Do")} />
           <Card.Meta
-            content={capitalize(this.props.rideStatus)}
-            className={`${this.statusColor(this.props.rideStatus)} ride-status`} />
+            content={capitalize(this.props.status)}
+            className={`${this.statusColor(this.props.status)} ride-status`} />
         </Card.Content>
         <Card.Content>
           <Card.Header content={`${this.formatTime(this.props.pickupTime)} pickup`} />
-          <Card.Description content={this.props.pickupLocation} />
+          <Card.Description content={this.props.pickupLocationString} />
         </Card.Content>
         <Card.Content>
           <Card.Header content={`${this.formatTime(this.props.dropoffTime)} dropoff`} />
-          <Card.Description content={this.props.dropoffLocation} />
+          <Card.Description content={this.props.dropoffLocationString} />
         </Card.Content>
         {
-          (this.props.driverName) ?
+          (this.props.driver) ?
             <Card.Content>
               <Card.Header>Your Driver</Card.Header>
               <Card.Description>
                 <Item.Group>
                   <Item>
                     <Item.Content verticalAlign='middle'>
-                      <Item.Header>{this.props.driverName}</Item.Header>
-                      <Item.Description>{this.props.driverPhone}</Item.Description>
+                      <Item.Header>{this.props.driver.name}</Item.Header>
+                      <Item.Description>{this.props.driver.phone}</Item.Description>
                     </Item.Content>
                   </Item>
                 </Item.Group>
@@ -69,7 +68,7 @@ class RideCard extends React.PureComponent<IRideCardProps> {
   }
 
   private formatTime(time: string) {
-    moment(time).format("h:mm a");
+    return moment(time).format("h:mm a");
   }
 
   private statusColor(status: RideStatus): SemanticCOLORS {

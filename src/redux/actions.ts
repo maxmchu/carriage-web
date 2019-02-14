@@ -19,7 +19,11 @@ import {
   FETCH_LOCATIONS_FAILURE,
   REQUEST_RIDE_REQUEST,
   REQUEST_RIDE_SUCCESS,
-  REQUEST_RIDE_FAILURE
+  REQUEST_RIDE_FAILURE,
+  RESET_REQUEST_RIDE_FORM,
+  FETCH_UPCOMING_RIDES_REQUEST,
+  FETCH_UPCOMING_RIDES_SUCCESS,
+  FETCH_UPCOMING_RIDES_FAILURE
 } from "./actionTypes";
 
 import axios from "axios";
@@ -288,12 +292,60 @@ export function handleRequestRideRequest(data: RideRequest) {
       response => {
         if (response.data.err) {
           dispatch(requestRideFailure(response.data.err));
+          console.error("An error occurred: ", response.data.err);
         } else {
           dispatch(requestRideSuccess(response.data));
         }
       },
       err => {
         dispatch(requestRideFailure(err));
+        console.error("An error occurred: ", err);
+      }
+    );
+  }
+}
+
+export function resetRequestRideForm() {
+  return function (dispatch: any) {
+    dispatch({ type: RESET_REQUEST_RIDE_FORM });
+  }
+}
+
+export function fetchUpcomingRidesRequest(data): IAction {
+  return {
+    type: FETCH_UPCOMING_RIDES_REQUEST,
+    payload: data
+  };
+}
+
+export function fetchUpcomingRidesSuccess(data): IAction {
+  return {
+    type: FETCH_UPCOMING_RIDES_SUCCESS,
+    payload: data
+  };
+}
+
+export function fetchUpcomingRidesFailure(err): IAction {
+  return {
+    type: FETCH_UPCOMING_RIDES_FAILURE,
+    payload: err
+  };
+}
+
+export function handleFetchUpcomingRidesRequest(data) {
+  return function (dispatch) {
+    dispatch(fetchUpcomingRidesRequest(data));
+    axios.post('rides/upcoming', data).then(
+      response => {
+        if (response.data.err) {
+          dispatch(fetchUpcomingRidesFailure(response.data.err));
+          console.error("An error occurred: ", response.data.err);
+        } else {
+          dispatch(fetchUpcomingRidesSuccess(response.data));
+        }
+      },
+      err => {
+        dispatch(fetchUpcomingRidesFailure(err));
         console.error("An error occurred: ", err);
       }
     );
