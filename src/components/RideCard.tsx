@@ -4,18 +4,20 @@ import '../styles/App.scss';
 import { Card, Item, SemanticCOLORS } from 'semantic-ui-react';
 
 import '../styles/components/ridecard.scss';
-import { RideStatus, DriverInfo } from '../types';
+import { RideStatus, RideUserInfo, AccountType } from '../types';
 import { capitalize } from 'lodash';
 const moment = require('moment');
 
 interface IRideCardProps {
   date: string;
+  accountType: AccountType;
   status: RideStatus;
   pickupTime: string;
   pickupLocationString: string;
   dropoffTime: string;
   dropoffLocationString: string;
-  driver?: DriverInfo;
+  driver?: RideUserInfo;
+  rider?: RideUserInfo;
 }
 
 class RideCard extends React.PureComponent<IRideCardProps> {

@@ -3,13 +3,14 @@ import '../styles/App.scss';
 import { connect } from 'react-redux';
 
 import { handleFetchUpcomingRidesRequest } from '../redux/actions';
-import { Ride } from '../types';
+import { Ride, AccountType } from '../types';
 import RideCard from './RideCard';
 
 interface IUpcomingRidesProps {
-  riderEmail: string;
-  fetchUpcomingRides: (riderEmail) => any;
+  userEmail: string;
+  fetchUpcomingRides: (userEmail, accountType) => any;
   upcomingRides: Ride[];
+  accountType: AccountType;
 }
 
 interface IUpcomingRidesState {
@@ -23,7 +24,7 @@ class UpcomingRides extends React.Component<IUpcomingRidesProps, IUpcomingRidesS
   }
 
   public componentDidMount() {
-    this.props.fetchUpcomingRides(this.props.riderEmail);
+    this.props.fetchUpcomingRides(this.props.userEmail, this.props.accountType);
   }
 
   public render() {
@@ -43,18 +44,19 @@ class UpcomingRides extends React.Component<IUpcomingRidesProps, IUpcomingRidesS
 }
 
 function mapStateToProps(state) {
-  const { email } = state.auth.user;
+  const { email, accountType } = state.auth.user;
   const { upcomingRides } = state.rides;
   return {
-    "riderEmail": email,
+    "userEmail": email,
+    "accountType": accountType,
     "upcomingRides": upcomingRides
   };
 }
 
 function matchDispatchToProps(dispatch) {
   return {
-    fetchUpcomingRides: (riderEmail) => dispatch(handleFetchUpcomingRidesRequest({ riderEmail }))
-  };
+    fetchUpcomingRides: (userEmail, accountType) => dispatch(handleFetchUpcomingRidesRequest({ userEmail, accountType }))
+  }
 }
 
 export default connect(mapStateToProps, matchDispatchToProps)(UpcomingRides);
