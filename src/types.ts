@@ -25,14 +25,15 @@ export enum RideStatus {
   COMPLETED = 'completed', CANCELLED = 'cancelled'
 }
 
-export interface DriverInfo {
+export interface RideUserInfo {
   name: string;
   phone: string;
 }
 
 export interface Ride {
   id: number;
-  riderEmail: string;
+  userEmail: string;
+  accountType: AccountType;
   date: string;
   pickupTime: string;
   pickupLocationId: number;
@@ -41,5 +42,6 @@ export interface Ride {
   dropoffLocationId: number;
   dropoffLocationString: string;
   status: RideStatus;
-  driver?: DriverInfo;
+  driver?: RideUserInfo;
+  rider?: RideUserInfo;
 }
