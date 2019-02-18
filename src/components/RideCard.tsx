@@ -9,7 +9,6 @@ import { capitalize } from 'lodash';
 const moment = require('moment');
 
 interface IRideCardProps {
-  date: string;
   accountType: AccountType;
   status: RideStatus;
   pickupTime: string;
@@ -26,13 +25,15 @@ class RideCard extends React.PureComponent<IRideCardProps> {
     super(props);
     this.statusColor = this.statusColor.bind(this);
     this.formatTime = this.formatTime.bind(this);
+    this.renderDriverInfo = this.renderDriverInfo.bind(this);
+    this.renderRiderInfo = this.renderRiderInfo.bind(this);
   }
 
   public render() {
     return (
       <Card color={this.statusColor(this.props.status)}>
         <Card.Content>
-          <Card.Header content={moment(this.props.date).format("MMMM Do")} />
+          <Card.Header content={moment(this.props.pickupTime.split(" ")[0]).format("MMMM Do")} />
           <Card.Meta
             content={capitalize(this.props.status)}
             className={`${this.statusColor(this.props.status)} ride-status`} />
@@ -45,28 +46,51 @@ class RideCard extends React.PureComponent<IRideCardProps> {
           <Card.Header content={`${this.formatTime(this.props.dropoffTime)} dropoff`} />
           <Card.Description content={this.props.dropoffLocationString} />
         </Card.Content>
-        {
-          (this.props.driver) ?
-            <Card.Content>
-              <Card.Header>Your Driver</Card.Header>
-              <Card.Description>
-                <Item.Group>
-                  <Item>
-                    <Item.Content verticalAlign='middle'>
-                      <Item.Header>{this.props.driver.name}</Item.Header>
-                      <Item.Description>{this.props.driver.phone}</Item.Description>
-                    </Item.Content>
-                  </Item>
-                </Item.Group>
-              </Card.Description>
-            </Card.Content> :
-            <Card.Content>
-              <Card.Description content={"Information about your driver will be posted here once your ride is confirmed."} />
-            </Card.Content>
-        }
+        {(this.props.accountType in [AccountType.DRIVER, AccountType.DISPATCHER]) ? this.renderRiderInfo() : null}
+        {(this.props.accountType in [AccountType.RIDER, AccountType.DISPATCHER]) ? this.renderDriverInfo() : null}
 
       </Card>
     );
+  }
+
+  private renderDriverInfo() {
+    return (this.props.driver) ?
+      <Card.Content>
+        <Card.Header>Driver Information</Card.Header>
+        <Card.Description>
+          <Item.Group>
+            <Item>
+              <Item.Content verticalAlign='middle'>
+                <Item.Header>{this.props.driver.name}</Item.Header>
+                <Item.Description>{this.props.driver.phone}</Item.Description>
+              </Item.Content>
+            </Item>
+          </Item.Group>
+        </Card.Description>
+      </Card.Content> :
+      <Card.Content>
+        <Card.Description content={"Information about your driver will be posted here once your ride is confirmed."} />
+      </Card.Content>
+  }
+
+  private renderRiderInfo() {
+    return (this.props.rider) ?
+      <Card.Content>
+        <Card.Header>Rider Information</Card.Header>
+        <Card.Description>
+          <Item.Group>
+            <Item>
+              <Item.Content verticalAlign='middle'>
+                <Item.Header>{this.props.rider.name}</Item.Header>
+                <Item.Description>{this.props.rider.phone}</Item.Description>
+              </Item.Content>
+            </Item>
+          </Item.Group>
+        </Card.Description>
+      </Card.Content> :
+      <Card.Content>
+        <Card.Description content={"Rider information is missing. Contact dispatchers for ride information."} />
+      </Card.Content>
   }
 
   private formatTime(time: string) {
