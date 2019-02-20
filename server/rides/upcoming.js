@@ -20,25 +20,25 @@ module.exports = {
       TableName: process.env.AWS_DYNAMODB_RIDES_TABLENAME,
       ExpressionAttributeValues: {
         ':re': userEmail,
-        ':pt': currentTime
+        ':dt': currentTime
       }
     }
     switch (accountType) {
       case 'rider':
         return {
           ...baseQuery,
-          IndexName: 'riderEmail-pickupTime-index',
-          KeyConditionExpression: 'riderEmail = :re and pickupTime >= :pt',
+          IndexName: 'riderEmail-dropoffTime-index',
+          KeyConditionExpression: 'riderEmail = :re and dropoffTime >= :dt',
         };
       case 'driver':
         return {
           ...baseQuery,
-          IndexName: 'driverEmail-pickupTime-index',
-          KeyConditionExpression: 'driverEmail = :re and pickupTime >= :pt'
+          IndexName: 'driverEmail-dropoffTime-index',
+          KeyConditionExpression: 'driverEmail = :re and dropoffTime >= :dt'
         }
     }
   },
-  getUserDataForRides(rides, accountType) {
+  getRideUserDataPromises(rides, accountType) {
 
     if (!accountType in ['rider', 'driver']) {
       return { err: "Invalid rider type" };
@@ -46,69 +46,39 @@ module.exports = {
 
     if (accountType == 'rider') {
       let drivers = {};
-
-      // Add driver info to upcoming rides
-      return rides.map((ride) => {
-        if (ride.driverEmail) {
-          let driverInfo;
-          if (!(ride.driverEmail in drivers)) {
-            // Fetch driver info
-            driverInfo = documentClient.get(
-              {
-                TableName: process.env.AWS_DYNAMODB_USERS_TABLENAME,
-                Key: ride.driverEmail,
+      const promises = rides.map((ride) => {
+        return new Promise((resolve, reject) => {
+          if (ride.driverEmail) {
+            if (!(ride.driverEmail in drivers)) {
+              documentClient.get({
+                TableName: process.env.AWS_DYNAMODB_USER_TABLENAME,
+                Key: { email: ride.driverEmail },
                 AttributesToGet: ["firstName", "lastName", "phone"]
-              }, function (err, data) {
+              }, (err, data) => {
                 if (err) {
                   console.error(err, err.stack);
-                  return { err: err };
+                  reject(err);
                 } else {
-                  return data.Item;
+                  const driverInfo = data.Item;
+                  ride.driver = {
+                    name: driverInfo.firstName + " " + driverInfo.lastName,
+                    phone: driverInfo.phone
+                  }
+                  delete ride.driverEmail;
+                  resolve(ride);
                 }
-              }
-            );
-            if (driverInfo.err) return res.json({ err: driverInfo.err });
-            drivers[ride.driverEmail] = driverInfo;
-          } else {
-            driverInfo = drivers[ride.driverEmail];
-          }
-          ride.driver.name = `${driverInfo.firstName} ${driverInfo.lastName}`;
-          ride.driver.phone = driverInfo.phone
-          delete ride.driverEmail;
-        }
-        return ride;
-      });
-    }
-    if (accountType == 'driver') {
-      let riders = {};
-      return rides.map((ride) => {
-        let riderInfo;
-        if (!(ride.useremail in riders)) {
-          riderInfo = documentClient.get(
-            {
-              TableName: process.env.AWS_DYNAMODB_USERS_TABLENAME,
-              Key: ride.riderEmail,
-              AttributesToGet: ["firstName", "lastName", "phone"]
-            }, function (err, data) {
-              if (err) {
-                console.error(err, err.stack);
-                return { err: err };
-              } else {
-                return data.Item;
-              };
+              });
+            } else {
+              ride.driver = drivers[ride.driverEmail];
+              delete ride.driverEmail;
+              resolve(ride);
             }
-          );
-          if (riderInfo.err) return res.json({ err: riderInfo.err });
-          riders[ride.riderEmail] = riderInfo;
-        } else {
-          riderInfo = riders[ride.riderEmail];
-        }
-        ride.rider.name = `${riderInfo.firstName} ${riderInfo.lastName}`;
-        ride.rider.phone = riderInfo.phone;
-        delete ride.riderEmail;
-        return ride;
+          }
+        });
       });
+      return promises;
     }
+
   }
 }
 

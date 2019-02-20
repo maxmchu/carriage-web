@@ -1,0 +1,26 @@
+@import '../App.scss';
+
+.ui.card .header.ride-card-date {
+  font-size: 1.7rem !important;
+}
+.ui.card .meta.ride-status {
+  &.blue {
+    color: $s_blue;
+  }
+  &.olive {
+    color: $s_olive;
+  }
+  &.red {
+    color: $s_red;
+  }
+  &.green {
+    color: $s_green;
+  }
+  &.orange {
+    color: $s_orange;
+  }
+}
+
+.ui.card .meta.ride-card-location {
+  color: $figma_gray1;
+}

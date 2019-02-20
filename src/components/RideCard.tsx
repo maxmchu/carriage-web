@@ -33,21 +33,27 @@ class RideCard extends React.PureComponent<IRideCardProps> {
     return (
       <Card color={this.statusColor(this.props.status)}>
         <Card.Content>
-          <Card.Header content={moment(this.props.pickupTime.split(" ")[0]).format("MMMM Do")} />
+          <Card.Header
+            content={moment(this.props.pickupTime.split(" ")[0]).format("MMMM Do")}
+            className="ride-card-date" />
           <Card.Meta
             content={capitalize(this.props.status)}
             className={`${this.statusColor(this.props.status)} ride-status`} />
         </Card.Content>
         <Card.Content>
           <Card.Header content={`${this.formatTime(this.props.pickupTime)} pickup`} />
-          <Card.Description content={this.props.pickupLocationString} />
+          <Card.Meta
+            content={this.props.pickupLocationString}
+            className="ride-card-location" />
         </Card.Content>
         <Card.Content>
           <Card.Header content={`${this.formatTime(this.props.dropoffTime)} dropoff`} />
-          <Card.Description content={this.props.dropoffLocationString} />
+          <Card.Meta
+            content={this.props.dropoffLocationString}
+            className="ride-card-location" />
         </Card.Content>
-        {(this.props.accountType in [AccountType.DRIVER, AccountType.DISPATCHER]) ? this.renderRiderInfo() : null}
-        {(this.props.accountType in [AccountType.RIDER, AccountType.DISPATCHER]) ? this.renderDriverInfo() : null}
+        {([AccountType.DRIVER, AccountType.DISPATCHER].includes(this.props.accountType)) ? this.renderRiderInfo() : null}
+        {([AccountType.RIDER, AccountType.DISPATCHER].includes(this.props.accountType)) ? this.renderDriverInfo() : null}
 
       </Card>
     );

@@ -49,8 +49,9 @@ router.post('/upcoming', (req, res) => {
         return res.json({ err: err });
       } else {
         const rides = data.Items;
-        const upcomingRides = upcoming.getUserDataForRides(rides, upcomingRidesRequest.accountType);
-        return res.json(upcomingRides);
+        Promise.all(upcoming.getRideUserDataPromises(rides, upcomingRidesRequest.accountType)).then((data) => {
+          res.json(data);
+        });
       }
     });
   } catch (err) {
