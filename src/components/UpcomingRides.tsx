@@ -35,7 +35,11 @@ class UpcomingRides extends React.Component<IUpcomingRidesProps, IUpcomingRidesS
         </p>
         {
           this.props.upcomingRides.map((ride) => {
-            return <RideCard {...ride} key={"ride" + ride.id} />;
+            return (
+              <RideCard {...ride}
+                key={"ride" + ride.id}
+                accountType={this.props.accountType} />
+            );
           })
         }
       </div>
