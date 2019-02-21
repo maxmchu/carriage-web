@@ -15,6 +15,8 @@ interface IRideCardProps {
   pickupLocationString: string;
   dropoffTime: string;
   dropoffLocationString: string;
+  pickupLocationDesc?: string;
+  dropoffLocationDesc?: string;
   driver?: RideUserInfo;
   rider?: RideUserInfo;
 }
@@ -45,12 +47,24 @@ class RideCard extends React.PureComponent<IRideCardProps> {
           <Card.Meta
             content={this.props.pickupLocationString}
             className="ride-card-location" />
+          {(this.props.pickupLocationDesc) ?
+            <Card.Description
+              content={this.props.pickupLocationDesc}
+              className={"ride-card-location-desc"} /> :
+            null
+          }
         </Card.Content>
         <Card.Content>
           <Card.Header content={`${this.formatTime(this.props.dropoffTime)} dropoff`} />
           <Card.Meta
             content={this.props.dropoffLocationString}
             className="ride-card-location" />
+          {(this.props.dropoffLocationDesc) ?
+            <Card.Description
+              content={this.props.dropoffLocationDesc}
+              className={"ride-card-location-desc"} /> :
+            null
+          }
         </Card.Content>
         {([AccountType.DRIVER, AccountType.DISPATCHER].includes(this.props.accountType)) ? this.renderRiderInfo() : null}
         {([AccountType.RIDER, AccountType.DISPATCHER].includes(this.props.accountType)) ? this.renderDriverInfo() : null}
@@ -67,8 +81,8 @@ class RideCard extends React.PureComponent<IRideCardProps> {
           <Item.Group>
             <Item>
               <Item.Content verticalAlign='middle'>
-                <Item.Header>{this.props.driver.name}</Item.Header>
-                <Item.Description>{this.props.driver.phone}</Item.Description>
+                <Item.Header className={"ride-card-driver-name"}>{this.props.driver.name}</Item.Header>
+                <Item.Description className={"ride-card-driver-phone"}>{this.props.driver.phone}</Item.Description>
               </Item.Content>
             </Item>
           </Item.Group>

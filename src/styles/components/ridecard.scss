@@ -4,6 +4,8 @@
   font-size: 1.7rem !important;
 }
 .ui.card .meta.ride-status {
+  margin-top: .3em;
+  font-size: 1.2rem;
   &.blue {
     color: $s_blue;
   }
@@ -23,4 +25,18 @@
 
 .ui.card .meta.ride-card-location {
   color: $figma_gray1;
+  margin-top: .3em;
+}
+
+.header.ride-card-driver-name {
+  font-size: 1em !important;
+  font-weight: normal !important;
+}
+.description.ride-card-driver-phone {
+  color: $figma_gray1 !important;
+  margin-top: .3em !important;
+}
+.description.ride-card-location-desc {
+  color: $figma_gray3 !important;
+  margin-top: 0 !important;
 }
