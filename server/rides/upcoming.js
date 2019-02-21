@@ -62,6 +62,7 @@ module.exports = {
                   reject(err);
                 } else {
                   const driverInfo = data.Item;
+                  drivers[ride.driverEmail] = driverInfo;
                   ride.driver = {
                     name: driverInfo.firstName + " " + driverInfo.lastName,
                     phone: driverInfo.phone
@@ -74,12 +75,13 @@ module.exports = {
               ride.driver = drivers[ride.driverEmail];
               resolve(ride);
             }
+          } else {
+            resolve(ride);
           }
         });
       });
       return promises;
     }
-
     if (accountType == 'driver') {
       let riders = {};
       const promises = rides.map((ride) => {
@@ -111,6 +113,53 @@ module.exports = {
       })
       return promises;
     }
+  },
+  getLocationDescPromises(rides) {
+    let locations = {};
+    const ridePromises = rides.map((ride) => {
+      return new Promise((resolve, reject) => {
+        const descPromises = [
+          [ride.pickupLocationId, ride.pickupLocationString],
+          [ride.dropoffLocationId, ride.dropoffLocationString]].map(([id, str]) => {
+            return new Promise((resolve, reject) => {
+              if (id > 0) {
+                if (!(id in locations)) {
+                  documentClient.get({
+                    TableName: process.env.AWS_DYNAMODB_LOCATIONS_TABLENAME,
+                    Key: { id },
+                    AttributesToGet: ["location", "desc"]
+                  }, function (err, data) {
+                    if (err) {
+                      console.error(err, err.stack);
+                      reject(err);
+                    } else {
+                      const locationInfo = data.Item;
+                      locations[id] = locationInfo;
+                      if (str == locationInfo.location) {
+                        resolve(locationInfo.desc);
+                      } else {
+                        resolve("");
+                      }
+                    }
+                  });
+                } else {
+                  resolve(locations[id].desc);
+                }
+              } else {
+                resolve("");
+              }
+            })
+          });
+        Promise.all(descPromises).then((descs) => {
+          if (descs[0] != "") ride.pickupLocationDesc = descs[0];
+          if (descs[1] != "") ride.dropoffLocationDesc = descs[1];
+          resolve(ride);
+        }).catch((err) => {
+          reject(err);
+        });
+      });
+    });
+    return ridePromises;
   }
 }
 

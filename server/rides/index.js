@@ -50,6 +50,8 @@ router.post('/upcoming', (req, res) => {
       } else {
         const rides = data.Items;
         Promise.all(upcoming.getRideUserDataPromises(rides, upcomingRidesRequest.accountType)).then((data) => {
+          return Promise.all(upcoming.getLocationDescPromises(data))
+        }).then((data) => {
           res.json(data);
         });
       }

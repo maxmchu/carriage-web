@@ -1,6 +1,7 @@
 import * as React from 'react';
 import '../styles/App.scss';
 import { connect } from 'react-redux';
+import { Dimmer, Loader, Segment } from 'semantic-ui-react';
 
 import { handleFetchUpcomingRidesRequest } from '../redux/actions';
 import { Ride, AccountType } from '../types';
@@ -11,6 +12,7 @@ interface IUpcomingRidesProps {
   fetchUpcomingRides: (userEmail, accountType) => any;
   upcomingRides: Ride[];
   accountType: AccountType;
+  fetchingUpcomingRides: boolean;
 }
 
 interface IUpcomingRidesState {
@@ -29,31 +31,35 @@ class UpcomingRides extends React.Component<IUpcomingRidesProps, IUpcomingRidesS
 
   public render() {
     return (
-      <div>
-        <p>
-          You have {this.props.upcomingRides.length} upcoming ride{(this.props.upcomingRides.length == 1) ? '' : 's'}.
+      (this.props.fetchingUpcomingRides) ?
+        <Loader active inline="centered">Loading upcoming rides</Loader>
+        :
+        <div>
+          <p>
+            You have {this.props.upcomingRides.length} upcoming ride{(this.props.upcomingRides.length == 1) ? '' : 's'}.
         </p>
-        {
-          this.props.upcomingRides.map((ride) => {
-            return (
-              <RideCard {...ride}
-                key={"ride" + ride.id}
-                accountType={this.props.accountType} />
-            );
-          })
-        }
-      </div>
+          {
+            this.props.upcomingRides.map((ride) => {
+              return (
+                <RideCard {...ride}
+                  key={"ride" + ride.id}
+                  accountType={this.props.accountType} />
+              );
+            })
+          }
+        </div>
     );
   }
 }
 
 function mapStateToProps(state) {
   const { email, accountType } = state.auth.user;
-  const { upcomingRides } = state.rides;
+  const { upcomingRides, fetchingUpcomingRides } = state.rides;
   return {
     "userEmail": email,
-    "accountType": accountType,
-    "upcomingRides": upcomingRides
+    accountType,
+    upcomingRides,
+    fetchingUpcomingRides
   };
 }
 
