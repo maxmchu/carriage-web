@@ -41,7 +41,9 @@ module.exports = {
   getRideUserDataPromises(rides, accountType) {
 
     if (!accountType in ['rider', 'driver']) {
-      return { err: "Invalid rider type" };
+      return new Promise((resolve, reject) => {
+        reject({ err: "Invalid rider type" });
+      });
     }
 
     if (accountType == 'rider') {
@@ -70,7 +72,6 @@ module.exports = {
               });
             } else {
               ride.driver = drivers[ride.driverEmail];
-              delete ride.driverEmail;
               resolve(ride);
             }
           }
@@ -79,6 +80,37 @@ module.exports = {
       return promises;
     }
 
+    if (accountType == 'driver') {
+      let riders = {};
+      const promises = rides.map((ride) => {
+        return new Promise((resolve, reject) => {
+          if (!(ride.riderEmail in riders)) {
+            documentClient.get({
+              TableName: process.env.AWS_DYNAMODB_USER_TABLENAME,
+              Key: { email: ride.riderEmail },
+              AttributesToGet: ["firstName", "lastName", "phone"]
+            }, (err, data) => {
+              if (err) {
+                console.error(err, err.stack);
+                reject(err);
+              } else {
+                const riderInfo = data.Item;
+                ride.rider = {
+                  name: riderInfo.firstName + " " + rider.lastName,
+                  phone: riderInfo.phone
+                };
+                delete ride.riderEmail;
+                resolve(ride);
+              }
+            });
+          } else {
+            ride.rider = riders[ride.riderEmail];
+            resolve(ride);
+          }
+        });
+      })
+      return promises;
+    }
   }
 }
 
