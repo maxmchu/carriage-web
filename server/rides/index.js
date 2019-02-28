@@ -9,6 +9,7 @@ const AWS = require('aws-sdk');
 const uuidv1 = require('uuid/v1');
 const moment = require('moment');
 const upcoming = require('./upcoming');
+const past = require('./past');
 
 const documentClient = new AWS.DynamoDB.DocumentClient({ region: process.env.AWS_REGION, apiVersion: '2012-08-10' });
 
@@ -59,6 +60,26 @@ router.post('/upcoming', (req, res) => {
   } catch (err) {
     return res.json({ err });
   }
+});
+
+router.post('/past', (req, res) => {
+  const pastRidesRequest = req.body;
+
+  const { userEmail, accountType, rideIndex } = pastRidesRequest;
+  const queryParams = past.accountGetQueryParams(accountType, userEmail, rideIndex);
+  console.log(queryParams);
+
+  documentClient.query(queryParams, function (err, data) {
+    if (err) {
+      console.log("oh no")
+      console.error(err, err.stack);
+      return res.json({ err: err });
+    } else {
+      console.log("oh yes")
+      res.json(data.Items);
+    }
+  });
+
 });
 
 module.exports = router;
