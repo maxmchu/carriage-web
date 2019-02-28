@@ -23,7 +23,9 @@ import {
   RESET_REQUEST_RIDE_FORM,
   FETCH_UPCOMING_RIDES_REQUEST,
   FETCH_UPCOMING_RIDES_SUCCESS,
-  FETCH_UPCOMING_RIDES_FAILURE
+  FETCH_UPCOMING_RIDES_FAILURE,
+  FETCH_PAST_RIDES_REQUEST,
+  FETCH_PAST_RIDES_SUCCESS
 } from "./actionTypes";
 
 import axios from "axios";
@@ -346,6 +348,47 @@ export function handleFetchUpcomingRidesRequest(data) {
       },
       err => {
         dispatch(fetchUpcomingRidesFailure(err));
+        console.error("An error occurred: ", err);
+      }
+    );
+  }
+}
+
+export function fetchPastRidesRequest(data): IAction {
+  return {
+    type: FETCH_PAST_RIDES_REQUEST,
+    payload: data
+  };
+}
+
+export function fetchPastRidesSuccess(data): IAction {
+  return {
+    type: FETCH_PAST_RIDES_SUCCESS,
+    payload: data
+  };
+}
+
+export function fetchPastRidesFailure(err): IAction {
+  return {
+    type: FETCH_LOCATIONS_FAILURE,
+    payload: err
+  }
+}
+
+export function handleFetchPastRidesRequest(data) {
+  return function (dispatch) {
+    dispatch(fetchPastRidesRequest(data));
+    axios.post('rides/past', data).then(
+      response => {
+        if (response.data.err) {
+          dispatch(fetchPastRidesFailure(response.data.err));
+          console.error("An error occurred: ", response.data.err);
+        } else {
+          dispatch(fetchPastRidesSuccess(response.data));
+        }
+      },
+      err => {
+        dispatch(fetchPastRidesFailure(err));
         console.error("An error occurred: ", err);
       }
     );

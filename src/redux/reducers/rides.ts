@@ -1,12 +1,40 @@
-import { REQUEST_RIDE_REQUEST, REQUEST_RIDE_SUCCESS, REQUEST_RIDE_FAILURE, RESET_REQUEST_RIDE_FORM, FETCH_UPCOMING_RIDES_REQUEST, FETCH_UPCOMING_RIDES_SUCCESS, FETCH_UPCOMING_RIDES_FAILURE } from '../actionTypes';
+import {
+  REQUEST_RIDE_REQUEST,
+  REQUEST_RIDE_SUCCESS,
+  REQUEST_RIDE_FAILURE,
+  RESET_REQUEST_RIDE_FORM,
+  FETCH_UPCOMING_RIDES_REQUEST,
+  FETCH_UPCOMING_RIDES_SUCCESS,
+  FETCH_UPCOMING_RIDES_FAILURE,
+  FETCH_PAST_RIDES_REQUEST,
+  FETCH_PAST_RIDES_SUCCESS,
+  FETCH_PAST_RIDES_FAILURE
+} from '../actionTypes';
 
-const initialState = {
+import { concat } from 'lodash';
+
+interface IRideInitialState {
+  rideSubmitted: boolean;
+  requestingRide: boolean;
+  rideSubmitErrMsg: string;
+  upcomingRides: any[];
+  fetchingUpcomingRides: boolean;
+  fetchingUpcomingRidesErrMsg: string;
+  pastRides: any[];
+  fetchingPastRides: boolean;
+  fetchingPastRidesErrMsg: string;
+}
+
+const initialState: IRideInitialState = {
   rideSubmitted: false,
   requestingRide: false,
   rideSubmitErrMsg: "",
   upcomingRides: [],
   fetchingUpcomingRides: false,
-  fetchingUpcomingRidesErrMsg: ""
+  fetchingUpcomingRidesErrMsg: "",
+  pastRides: [],
+  fetchingPastRides: false,
+  fetchingPastRidesErrMsg: ""
 };
 
 const ridesReducer = (state = initialState, action) => {
@@ -65,6 +93,28 @@ const ridesReducer = (state = initialState, action) => {
         upcomingRides: [],
         fetchingUpcomingRides: false,
         fetchingUpcomingRidesErrMsg: action.payload.err
+      }
+
+    case FETCH_PAST_RIDES_REQUEST:
+      return {
+        ...state,
+        fetchingPastRides: true,
+        fetchingPastRidesErrMsg: ""
+      }
+
+    case FETCH_PAST_RIDES_SUCCESS:
+      return {
+        ...state,
+        pastRides: concat(state.pastRides, action.payload),
+        fetchingPastRides: false,
+        fetchingPastRidesErrMsg: ""
+      }
+
+    case FETCH_PAST_RIDES_FAILURE:
+      return {
+        ...state,
+        fetchingPastRides: false,
+        fetchingPastRidesErrMsg: action.payload.err
       }
 
     default:

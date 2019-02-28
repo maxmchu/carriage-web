@@ -1,7 +1,7 @@
 import * as React from 'react';
 import '../styles/App.scss';
 import { connect } from 'react-redux';
-import { Dimmer, Loader, Segment } from 'semantic-ui-react';
+import { Header, Icon, Loader, Segment } from 'semantic-ui-react';
 
 import { handleFetchUpcomingRidesRequest } from '../redux/actions';
 import { Ride, AccountType } from '../types';
@@ -15,14 +15,11 @@ interface IUpcomingRidesProps {
   fetchingUpcomingRides: boolean;
 }
 
-interface IUpcomingRidesState {
-
-}
-
-class UpcomingRides extends React.Component<IUpcomingRidesProps, IUpcomingRidesState>{
+class UpcomingRides extends React.PureComponent<IUpcomingRidesProps>{
 
   public constructor(props) {
     super(props);
+    this.renderRideCount = this.renderRideCount.bind(this);
   }
 
   public componentDidMount() {
@@ -35,9 +32,9 @@ class UpcomingRides extends React.Component<IUpcomingRidesProps, IUpcomingRidesS
         <Loader active inline="centered">Loading upcoming rides</Loader>
         :
         <div>
-          <p>
-            You have {this.props.upcomingRides.length} upcoming ride{(this.props.upcomingRides.length == 1) ? '' : 's'}.
-        </p>
+          {
+            this.renderRideCount()
+          }
           {
             this.props.upcomingRides.map((ride) => {
               return (
@@ -49,6 +46,23 @@ class UpcomingRides extends React.Component<IUpcomingRidesProps, IUpcomingRidesS
           }
         </div>
     );
+  }
+
+  private renderRideCount() {
+    return (this.props.upcomingRides.length > 0) ?
+      (
+        <p>
+          You have {this.props.upcomingRides.length} upcoming ride{(this.props.upcomingRides.length == 1) ? '' : 's'}.
+        </p>
+      ) :
+      (
+        <Segment placeholder>
+          <Header icon>
+            <Icon name='circle outline' />
+            You have no upcoming rides.
+          </Header>
+        </Segment>
+      )
   }
 }
 
