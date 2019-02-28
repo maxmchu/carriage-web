@@ -11,6 +11,7 @@ import { AccountType } from '../types';
 import DashboardNav from '../components/DashboardNav';
 import { resetRequestRideForm } from '../redux/actions';
 import UpcomingRides from '../components/UpcomingRides';
+import PastRides from '../components/PastRides';
 
 interface IDashboardProps {
   firstName: string;
@@ -48,6 +49,8 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
               </Button> : null
           }
           <UpcomingRides />
+          <Header as={"h1"}>Past Rides</Header>
+          <PastRides />
         </Container>
       </div>
 
