@@ -14,6 +14,7 @@ module.exports = {
     }
     const baseQuery = {
       TableName: process.env.AWS_DYNAMODB_RIDES_TABLENAME,
+      ScanIndexForward: false
     }
     if (rideIndex > 0) {
       baseQuery.ExclusiveStartKey = rideIndex;

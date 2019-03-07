@@ -25,7 +25,8 @@ import {
   FETCH_UPCOMING_RIDES_SUCCESS,
   FETCH_UPCOMING_RIDES_FAILURE,
   FETCH_PAST_RIDES_REQUEST,
-  FETCH_PAST_RIDES_SUCCESS
+  FETCH_PAST_RIDES_SUCCESS,
+  RESET_RIDES_STATE
 } from "./actionTypes";
 
 import axios from "axios";
@@ -214,6 +215,7 @@ export function logoutFailure(err): IAction {
 export function handleLogoutRequest() {
   return function (dispatch: any) {
     dispatch(logoutRequest());
+    dispatch(resetRidesState());
     axios.post('/auth/logout').then(
       response => {
         dispatch(logoutSuccess(response.data));
@@ -392,5 +394,11 @@ export function handleFetchPastRidesRequest(data) {
         console.error("An error occurred: ", err);
       }
     );
+  }
+}
+
+export function resetRidesState(): IAction {
+  return {
+    type: RESET_RIDES_STATE
   }
 }

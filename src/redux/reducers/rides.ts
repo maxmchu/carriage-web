@@ -8,7 +8,8 @@ import {
   FETCH_UPCOMING_RIDES_FAILURE,
   FETCH_PAST_RIDES_REQUEST,
   FETCH_PAST_RIDES_SUCCESS,
-  FETCH_PAST_RIDES_FAILURE
+  FETCH_PAST_RIDES_FAILURE,
+  RESET_RIDES_STATE
 } from '../actionTypes';
 
 import { concat } from 'lodash';
@@ -105,7 +106,7 @@ const ridesReducer = (state = initialState, action) => {
     case FETCH_PAST_RIDES_SUCCESS:
       return {
         ...state,
-        pastRides: concat(state.pastRides, action.payload),
+        pastRides: action.payload,
         fetchingPastRides: false,
         fetchingPastRidesErrMsg: ""
       }
@@ -116,6 +117,9 @@ const ridesReducer = (state = initialState, action) => {
         fetchingPastRides: false,
         fetchingPastRidesErrMsg: action.payload.err
       }
+
+    case RESET_RIDES_STATE:
+      return initialState
 
     default:
       return state;

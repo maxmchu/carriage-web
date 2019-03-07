@@ -67,15 +67,12 @@ router.post('/past', (req, res) => {
 
   const { userEmail, accountType, rideIndex } = pastRidesRequest;
   const queryParams = past.accountGetQueryParams(accountType, userEmail, rideIndex);
-  console.log(queryParams);
 
   documentClient.query(queryParams, function (err, data) {
     if (err) {
-      console.log("oh no")
       console.error(err, err.stack);
       return res.json({ err: err });
     } else {
-      console.log("oh yes")
       res.json(data.Items);
     }
   });
