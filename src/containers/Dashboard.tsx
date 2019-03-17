@@ -30,30 +30,67 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
   public componentDidMount() {
     this.props.resetRideForm();
+    this.renderRider = this.renderRider.bind(this);
+    this.renderDriver = this.renderDriver.bind(this);
+    this.renderDispatcher = this.renderDispatcher.bind(this);
   }
 
   public render() {
+
+    switch (this.props.accountType) {
+      case AccountType.RIDER:
+        return this.renderRider();
+      case AccountType.DRIVER:
+        return this.renderDriver();
+      case AccountType.DISPATCHER:
+        return this.renderDispatcher();
+    }
+
+  }
+
+  private renderRider(): JSX.Element {
     return (
       <div>
         <DashboardNav />
         <Container>
           <Header as={"h1"}>Upcoming Rides</Header>
-          {
-            (this.props.accountType == AccountType.RIDER) ?
-              <Button basic
-                color='blue'
-                style={{ marginBottom: "10px" }}
-                as={Link}
-                to={"/dashboard/request"}>
-                Request a ride
-              </Button> : null
-          }
+          <Button basic
+            color='blue'
+            style={{ marginBottom: "10px" }}
+            as={Link}
+            to={"/dashboard/request"}
+            content='Request a ride' />
           <UpcomingRides />
           <Header as={"h1"}>Past Rides</Header>
           <PastRides />
         </Container>
       </div>
+    )
+  }
 
+  private renderDriver(): JSX.Element {
+    return (
+      <div>
+        <DashboardNav />
+        <Container>
+          <Header as={"h1"}>Upcoming Rides</Header>
+
+          <UpcomingRides />
+          <Header as={"h1"}>Past Rides</Header>
+          <PastRides />
+        </Container>
+      </div>
+    );
+  }
+
+  private renderDispatcher(): JSX.Element {
+    return (
+      <div>
+        <DashboardNav />
+        <Container>
+          <Header as={"h1"}>Dispatcher View</Header>
+        </Container>
+      </div>
     )
   }
 }

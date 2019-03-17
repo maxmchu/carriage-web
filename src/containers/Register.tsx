@@ -15,6 +15,7 @@ interface IRegisterState {
   username: string;
   password: string;
   confirmPassword: string;
+  phone: string;
 }
 
 class Register extends React.Component<IRegisterProps, IRegisterState> {
@@ -26,7 +27,8 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
       lastName: '',
       username: '',
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      phone: ''
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -57,27 +59,39 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
                 placeholder='First name'
                 value={this.state.firstName}
                 name='firstName'
-                onChange={this.handleChange} />
+                onChange={this.handleChange}
+                required />
               <Form.Input fluid
                 label='Last name'
                 placeholder='Last name'
                 value={this.state.lastName}
                 name='lastName'
-                onChange={this.handleChange} />
+                onChange={this.handleChange}
+                required />
             </Form.Group>
             <Form.Input
               label='Cornell Email'
               placeholder='NetID@cornell.edu'
               value={this.state.username}
               name='username'
-              onChange={this.handleChange} />
+              onChange={this.handleChange}
+              required />
             <Form.Input
               label='Password'
               type='password'
               placeholder='ADALift Password'
+              value={this.state.password}
               name='password'
               onChange={this.handleChange}
-            />
+              required />
+            <Form.Input
+              label='Phone number'
+              placeholder='xxx-xxx-xxxx'
+              value={this.state.phone}
+              type='tel'
+              name='phone'
+              onChange={this.handleChange}
+              required />
             <Button type='submit' onClick={this.handleSubmit}>Register</Button>
           </Form>
           <Segment color='blue'>
@@ -112,7 +126,8 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
       password: this.state.password,
       firstName: this.handleName(this.state.firstName),
       lastName: capitalize(this.state.lastName),
-      accountType: 'rider'
+      accountType: 'rider',
+      phone: this.state.phone
     });
   }
 

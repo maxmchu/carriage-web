@@ -67,7 +67,7 @@ router.post('/logout', (req, res) => {
 
 router.post('/signup', (req, res) => {
   console.log(req.body);
-  const { username, password, firstName, lastName } = req.body;
+  const { username, password, firstName, lastName, phone } = req.body;
   const hashedPassword = bcrypt.hashSync(password, 10);
   const getParams = {
     TableName: process.env.AWS_DYNAMODB_USER_TABLENAME,
@@ -81,7 +81,9 @@ router.post('/signup', (req, res) => {
     password: hashedPassword,
     firstName: firstName,
     lastName: lastName,
-    accountType: 'rider'
+    accountType: 'rider',
+    phone: phone,
+    active: false
   }
 
   const putParams = {
