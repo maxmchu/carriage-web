@@ -84,7 +84,7 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
 
   public render() {
     return (
-      (this.props.rideSubmitted && this.props.rideSubmitErrMsg == "") ?
+      (this.props.rideSubmitted && this.props.rideSubmitErrMsg === "") ?
         <div>
           <DashboardNav />
           <Container>
@@ -102,7 +102,7 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
           <Container>
             <Header as={"h1"}>Request a Ride</Header>
             {
-              (this.props.rideSubmitErrMsg == "") ? null :
+              (this.props.rideSubmitErrMsg === "") ? null :
                 <Message negative>
                   <Message.Header>An error occurred with your request!</Message.Header>
                   Please try submitting again.
@@ -272,7 +272,7 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
     })
     setTimeout(() => {
       if (this.state[targetField].length < 1) {
-        if (pickupDropoff == "pickup") {
+        if (pickupDropoff === "pickup") {
           return this.resetPickupComponent();
         } else {
           return this.resetDropoffComponent();
@@ -283,7 +283,7 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
       const isMatch = result => re.test(result.title)
 
       let matches = filter(this.props.locations, isMatch);
-      if (matches.length == 0) {
+      if (matches.length === 0) {
         matches = [{
           title: this.state[targetField],
           description: this.state[targetField],
@@ -310,7 +310,7 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
       this.state.pickupLocationString.length > 0,
       this.state.dropoffLocationString.length > 0
     ];
-    return (findIndex(conditions, (i) => { return i == false }) == -1);
+    return (findIndex(conditions, (i) => i === false) === -1);
   }
 
   private handleRideSubmit(e) {
@@ -350,10 +350,10 @@ function mapStateToProps(state) {
   const { rideSubmitted, requestingRide, rideSubmitErrMsg } = state.rides;
   return {
     locations: convertLocationsToItems(locations),
-    user: user,
-    rideSubmitted: rideSubmitted,
-    requestingRide: requestingRide,
-    rideSubmitErrMsg: rideSubmitErrMsg
+    user,
+    rideSubmitted,
+    requestingRide,
+    rideSubmitErrMsg
   };
 }
 
