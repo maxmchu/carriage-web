@@ -51,3 +51,9 @@ $s_black          : #000000;
 .text-container {
   max-width: 767px;
 }
+
+.middle-align {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

@@ -52,8 +52,8 @@ function mapStateToProps(state) {
   return {};
 }
 
-function matchDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch) {
   return {};
 }
 
-export default connect(mapStateToProps, matchDispatchToProps)(Welcome);
+export default connect(mapStateToProps, mapDispatchToProps)(Welcome);

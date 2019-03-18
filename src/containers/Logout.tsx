@@ -26,10 +26,10 @@ function mapStateToProps(state) {
   return {};
 }
 
-function matchDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     handleLogout: () => dispatch(handleLogoutRequest())
   };
 }
 
-export default connect(mapStateToProps, matchDispatchToProps)(Logout);
+export default connect(mapStateToProps, mapDispatchToProps)(Logout);

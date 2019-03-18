@@ -106,10 +106,10 @@ function mapStateToProps(state) {
   };
 }
 
-function matchDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     resetRideForm: () => dispatch(resetRequestRideForm())
   };
 }
 
-export default connect(mapStateToProps, matchDispatchToProps)(Dashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

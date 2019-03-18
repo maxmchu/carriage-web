@@ -97,10 +97,10 @@ function mapStateToProps(state: any) {
   return { errorMsg: loginErrorMsg };
 }
 
-function matchDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: any) {
   return {
     handleLoginRequest: (loginData) => dispatch(handleLocalLoginRequest(loginData))
   };
 }
 
-export default connect(mapStateToProps, matchDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

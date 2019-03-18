@@ -92,11 +92,11 @@ function mapStateToProps(state) {
   };
 }
 
-function matchDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     fetchPastRides: (userEmail, accountType) =>
       dispatch(handleFetchPastRidesRequest({ userEmail, accountType }))
   };
 }
 
-export default connect(mapStateToProps, matchDispatchToProps)(PastRides);
+export default connect(mapStateToProps, mapDispatchToProps)(PastRides);

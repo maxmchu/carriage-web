@@ -138,10 +138,10 @@ function mapStateToProps(state: any) {
   return { errorMsg: registerErrorMsg };
 }
 
-function matchDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: any) {
   return {
     handleRegisterRequest: (registerData) => dispatch(handleLocalRegisterRequest(registerData))
   };
 }
 
-export default connect(mapStateToProps, matchDispatchToProps)(Register);
+export default connect(mapStateToProps, mapDispatchToProps)(Register);

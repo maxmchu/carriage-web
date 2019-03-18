@@ -77,10 +77,10 @@ function mapStateToProps(state) {
   };
 }
 
-function matchDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     fetchUpcomingRides: (userEmail, accountType) => dispatch(handleFetchUpcomingRidesRequest({ userEmail, accountType }))
   }
 }
 
-export default connect(mapStateToProps, matchDispatchToProps)(UpcomingRides);
+export default connect(mapStateToProps, mapDispatchToProps)(UpcomingRides);
