@@ -52,7 +52,7 @@ class UpcomingRides extends React.PureComponent<IUpcomingRidesProps>{
     return (this.props.upcomingRides.length > 0) ?
       (
         <p>
-          You have {this.props.upcomingRides.length} upcoming ride{(this.props.upcomingRides.length == 1) ? '' : 's'}.
+          You have {this.props.upcomingRides.length} upcoming ride{(this.props.upcomingRides.length === 1) ? '' : 's'}.
         </p>
       ) :
       (

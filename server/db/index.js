@@ -7,7 +7,6 @@ const express = require('express');
 const router = express.Router();
 const AWS = require('aws-sdk');
 
-const dynamoDB = new AWS.DynamoDB({ region: process.env.AWS_REGION, apiVersion: '2012-08-10' })
 const documentClient = new AWS.DynamoDB.DocumentClient({ region: process.env.AWS_REGION, apiVersion: '2012-08-10' });
 
 router.get('/locations', (req, res) => {

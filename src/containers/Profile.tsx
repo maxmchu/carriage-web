@@ -2,16 +2,27 @@ import * as React from 'react';
 import '../styles/App.scss';
 import { connect } from 'react-redux';
 
-import { Button, Checkbox, Container, Divider, Form, Header } from 'semantic-ui-react';
+import { Button, Checkbox, Container, Divider, Form, Header, Message } from 'semantic-ui-react';
 import DashboardNav from '../components/DashboardNav';
 import { AccountType } from '../types';
+import { handleProfileUpdateRequest } from '../redux/actions';
+
+interface IProfileRequest {
+  userEmail: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+}
 
 interface IProfileProps {
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
-  accountType: AccountType
+  accountType: AccountType;
+  updateProfile: (IProfileRequest) => any;
+  updateErrorMsg: string;
+  updateSuccessMsg: string;
 }
 
 interface IProfileState {
@@ -33,6 +44,7 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
     }
     this.handleChange = this.handleChange.bind(this);
     this.toggleEnable = this.toggleEnable.bind(this);
+    this.handleUpdateSubmit = this.handleUpdateSubmit.bind(this);
   }
 
   public render(): JSX.Element {
@@ -40,12 +52,26 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
       <div>
         <DashboardNav />
         <Container>
+          {
+            (this.props.updateErrorMsg !== "") ?
+              <Message negative>
+                <Message.Header content='An error occurred!' />
+                <Message.Content content={this.props.updateErrorMsg} />
+              </Message> : null
+          }
+          {
+            (this.props.updateSuccessMsg !== "") ?
+              <Message positive>
+                <Message.Header content={this.props.updateSuccessMsg} />
+              </Message> : null
+          }
           <Header as={"h1"}>Your Profile ({this.props.email})</Header>
           <Form>
             <Form.Group>
               <Checkbox toggle
                 onChange={this.toggleEnable}
-                label="Enable changes" />
+                label="Enable changes"
+                checked={this.state.enabled} />
             </Form.Group>
             <Form.Group>
               <Form.Input
@@ -64,7 +90,7 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
                 value={this.state.phone} />
             </Form.Group>
             <Divider hidden />
-            <Button basic color='blue' content='Save changes' disabled={!this.state.enabled} />
+            <Button basic color='blue' content='Save changes' disabled={!this.state.enabled} onClick={this.handleUpdateSubmit} />
           </Form>
         </Container>
       </div>
@@ -84,22 +110,41 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
     });
   }
 
+  private handleUpdateSubmit(e) {
+    const request: IProfileRequest = {
+      userEmail: this.props.email,
+      firstName: (this.state.firstName.length > 0) ? this.state.firstName : this.props.firstName,
+      lastName: (this.state.lastName.length > 0) ? this.state.lastName : this.props.lastName,
+      phone: (this.state.phone.length > 0) ? this.state.phone : this.props.phone
+    }
+    this.setState({
+      enabled: false
+    });
+    this.props.updateProfile(request);
+  }
+
 }
 
 function mapStatesToProps(state) {
   const { firstName, lastName, email, phone, accountType, loggedIn } = state.auth.user;
+  const { updatingProfile, updateErrorMsg, updateSuccessMsg } = state.profile;
   return {
-    "firstName": firstName,
-    "lastName": lastName,
-    "email": email,
-    "phone": phone,
-    "accountType": accountType,
-    "loggedIn": loggedIn
+    firstName,
+    lastName,
+    email,
+    phone,
+    accountType,
+    loggedIn,
+    updatingProfile,
+    updateErrorMsg,
+    updateSuccessMsg
   };
 }
 
 function mapDispatchToProps(dispatch) {
-
+  return {
+    updateProfile: ({ userEmail, firstName, lastName, phone }) => dispatch(handleProfileUpdateRequest({ userEmail, firstName, lastName, phone }))
+  }
 }
 
 export default connect(mapStatesToProps, mapDispatchToProps)(Profile);

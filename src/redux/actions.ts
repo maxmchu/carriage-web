@@ -26,7 +26,10 @@ import {
   FETCH_UPCOMING_RIDES_FAILURE,
   FETCH_PAST_RIDES_REQUEST,
   FETCH_PAST_RIDES_SUCCESS,
-  RESET_RIDES_STATE
+  RESET_RIDES_STATE,
+  PROFILE_UPDATE_REQUEST,
+  PROFILE_UPDATE_SUCCESS,
+  PROFILE_UPDATE_FAILURE
 } from "./actionTypes";
 
 import axios from "axios";
@@ -339,7 +342,7 @@ export function fetchUpcomingRidesFailure(err): IAction {
 export function handleFetchUpcomingRidesRequest(data) {
   return function (dispatch) {
     dispatch(fetchUpcomingRidesRequest(data));
-    axios.post('rides/upcoming', data).then(
+    axios.post('/rides/upcoming', data).then(
       response => {
         if (response.data.err) {
           dispatch(fetchUpcomingRidesFailure(response.data.err));
@@ -380,7 +383,7 @@ export function fetchPastRidesFailure(err): IAction {
 export function handleFetchPastRidesRequest(data) {
   return function (dispatch) {
     dispatch(fetchPastRidesRequest(data));
-    axios.post('rides/past', data).then(
+    axios.post('/rides/past', data).then(
       response => {
         if (response.data.err) {
           dispatch(fetchPastRidesFailure(response.data.err));
@@ -400,5 +403,46 @@ export function handleFetchPastRidesRequest(data) {
 export function resetRidesState(): IAction {
   return {
     type: RESET_RIDES_STATE
+  }
+}
+
+export function profileUpdateRequest(data): IAction {
+  return {
+    type: PROFILE_UPDATE_REQUEST,
+    payload: data
+  }
+}
+
+export function profileUpdateSuccess(data): IAction {
+  return {
+    type: PROFILE_UPDATE_SUCCESS,
+    payload: data
+  }
+}
+
+export function profileUpdateFailure(err): IAction {
+  return {
+    type: PROFILE_UPDATE_FAILURE,
+    payload: err
+  }
+}
+
+export function handleProfileUpdateRequest(data) {
+  return function (dispatch) {
+    dispatch(profileUpdateRequest(data));
+    axios.post('/profile/update', data).then(
+      response => {
+        if (response.data.err) {
+          dispatch(profileUpdateFailure(response.data.err));
+          console.error("An error occurred: ", response.data.err);
+        } else {
+          dispatch(profileUpdateSuccess(response.data));
+        }
+      },
+      err => {
+        dispatch(profileUpdateFailure(err));
+        console.error("An error occurred: ", err);
+      }
+    );
   }
 }

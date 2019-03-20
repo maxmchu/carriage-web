@@ -18,6 +18,7 @@
     "object-literal-sort-keys": false,
     "no-console": false,
     "only-arrow-function": false,
-    "no-var-requires": false
+    "no-var-requires": false,
+    "only-arrow-functions": false
   }
 }

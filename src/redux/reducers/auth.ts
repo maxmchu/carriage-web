@@ -65,7 +65,7 @@ const authReducer = (state = initialState, action: any) => {
           loggingIn: false,
           loggedIn: false,
           user: null,
-          loginErrorMsg: (action.payload.message == "Missing credentials") ?
+          loginErrorMsg: (action.payload.message === "Missing credentials") ?
             "Missing username or password." : action.payload.message
         }
       } else {

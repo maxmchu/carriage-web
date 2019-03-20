@@ -81,6 +81,7 @@ if (process.env.NODE_ENV === 'production') {
 app.use('/auth', require('./auth'))
 app.use('/db', require('./db'))
 app.use('/rides', require('./rides'))
+app.use('/profile', require('./profile'))
 
 // ====== Error handler ====
 app.use(function (err, req, res, next) {
