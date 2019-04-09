@@ -28,14 +28,29 @@ class DashboardNavigation extends React.Component<IDashboardNavProps, IDashboard
         <Menu.Item className="middle-align">
           <Image src={require("../assets/carriage.svg")} size='tiny' />
         </Menu.Item>
-        <Menu.Item as={Link} to={"/dashboard"} >
-          <Icon name='car' />
-          Rides
-        </Menu.Item>
+        {
+          (this.props.accountType === AccountType.DISPATCHER) ?
+            <Menu.Item as={Link} to={"/dashboard"} >
+              <Icon name='dashboard' />
+              Dashboard
+            </Menu.Item> :
+            <Menu.Item as={Link} to={"/dashboard"} >
+              <Icon name='car' />
+              Rides
+            </Menu.Item>
+        }
+
         <Menu.Item as={Link} to={"/dashboard/profile"}>
           <Icon name='user circle' />
           Profile
         </Menu.Item>
+        {
+          (this.props.accountType === AccountType.DRIVER) ?
+            <Menu.Item as={Link} to={"/dashboard/hours"}>
+              <Icon name='clock outline' />
+              Shift hours
+            </Menu.Item> : null
+        }
         <Menu.Menu position='right'>
           <Menu.Item className='middle-align'>
             <p>Logged in as <span style={{ fontWeight: "bold" }}>{this.props.firstName}</span></p>

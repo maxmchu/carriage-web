@@ -125,7 +125,7 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
 
 }
 
-function mapStatesToProps(state) {
+function mapStateToProps(state) {
   const { firstName, lastName, email, phone, accountType, loggedIn } = state.auth.user;
   const { updatingProfile, updateErrorMsg, updateSuccessMsg } = state.profile;
   return {
@@ -147,4 +147,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStatesToProps, mapDispatchToProps)(Profile);
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);

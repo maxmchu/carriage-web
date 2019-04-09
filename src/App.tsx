@@ -13,6 +13,7 @@ import Register from './containers/Register';
 import { AccountType } from './types';
 import Logout from './containers/Logout';
 import Profile from './containers/Profile';
+import Hours from './containers/Hours';
 
 interface IAppProps {
   checkingLogin: boolean;
@@ -61,12 +62,17 @@ class App extends React.Component<IAppProps, IAppState> {
             <ConditionalRoute exact
               path={`/dashboard/request`}
               component={RequestForm}
-              routeCondition={this.props.user && this.props.user.accountType == AccountType.RIDER}
+              routeCondition={this.props.user && this.props.user.accountType === AccountType.RIDER}
               redirectTo={"/dashboard"} />
             <ConditionalRoute exact
               path={`/dashboard/profile`}
               component={Profile}
               routeCondition={this.props.user}
+              redirectTo={"/dashboard"} />
+            <ConditionalRoute exact
+              path={'/dashboard/hours'}
+              component={Hours}
+              routeCondition={this.props.user && this.props.user.accountType === AccountType.DRIVER}
               redirectTo={"/dashboard"} />
           </Switch>
         </Router>
@@ -78,9 +84,9 @@ class App extends React.Component<IAppProps, IAppState> {
 function mapStateToProps(state: any) {
   const { checkingLogin, loggedIn, user } = state.auth;
   return {
-    checkingLogin: checkingLogin,
-    loggedIn: loggedIn,
-    user: user
+    checkingLogin,
+    loggedIn,
+    user
   };
 }
 

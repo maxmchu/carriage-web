@@ -19,6 +19,7 @@
     "no-console": false,
     "only-arrow-function": false,
     "no-var-requires": false,
-    "only-arrow-functions": false
+    "only-arrow-functions": false,
+    "interface-name": false
   }
 }
