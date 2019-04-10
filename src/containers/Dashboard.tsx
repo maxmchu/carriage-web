@@ -12,6 +12,7 @@ import DashboardNav from '../components/DashboardNav';
 import { resetRequestRideForm } from '../redux/actions';
 import UpcomingRides from '../components/UpcomingRides';
 import PastRides from '../components/PastRides';
+import Scheduling from '../components/Scheduling';
 
 interface IDashboardProps {
   firstName: string;
@@ -88,7 +89,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
       <div>
         <DashboardNav />
         <Container>
-          <Header as={"h1"}>Dispatcher View</Header>
+          <Scheduling />
         </Container>
       </div>
     )
