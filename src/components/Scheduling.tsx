@@ -3,6 +3,8 @@ import '../styles/App.scss';
 import { connect } from 'react-redux';
 
 import { Header } from 'semantic-ui-react';
+import { Moment } from 'moment';
+const moment = require('moment');
 
 interface ISchedulingProps {
 
@@ -22,6 +24,14 @@ class Scheduling extends React.Component<ISchedulingProps, ISchedulingState> {
     return (
       <div>
         <Header as="h1" content="Scheduling" />
+        <Header as="h2" content="Today's current and upcoming rides" />
+        <Header as="h3" content="Rides in progress" />
+
+        <Header as="h3" content="Upcoming rides" />
+
+        <Header as="h2" content="Today's schedule" />
+        <Header as="h2" content="Pending requests" />
+
       </div>
     )
   }

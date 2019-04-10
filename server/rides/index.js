@@ -9,6 +9,7 @@ const AWS = require('aws-sdk');
 const uuidv1 = require('uuid/v1');
 const moment = require('moment');
 const upcoming = require('./upcoming');
+const allUpcomingForDay = require('./allUpcomingForDay');
 const past = require('./past');
 
 const documentClient = new AWS.DynamoDB.DocumentClient({ region: process.env.AWS_REGION, apiVersion: '2012-08-10' });
@@ -57,6 +58,34 @@ router.post('/upcoming', (req, res) => {
         });
       }
     });
+  } catch (err) {
+    return res.json({ err });
+  }
+});
+
+router.post('/allUpcomingForDay', (req, res) => {
+  try {
+    const query = allUpcomingForDay.getQueryParams();
+    documentClient.query(query, function (err, data) {
+      if (err) {
+        console.error(err, err.stack);
+        return res.json({ err: err });
+      } else {
+        const rides = data.Items;
+        if (rides.length > 0) {
+          Promise.all(upcoming.getRideUserDataPromises(rides, 'driver')).then((data) => {
+            return Promise.all(upcoming.getRideUserDataPromises(data, 'rider')).then((data) => {
+              return Promise.all(upcoming.getLocationDescPromises(data))
+                .then((data) => {
+                  res.json(data);
+                });
+            })
+          });
+        } else {
+          res.json(rides);
+        }
+      }
+    })
   } catch (err) {
     return res.json({ err });
   }
