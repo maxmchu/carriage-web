@@ -67,7 +67,6 @@ module.exports = {
                     name: driverInfo.firstName + " " + driverInfo.lastName,
                     phone: driverInfo.phone
                   }
-                  delete ride.driverEmail;
                   resolve(ride);
                 }
               });
@@ -98,10 +97,9 @@ module.exports = {
               } else {
                 const riderInfo = data.Item;
                 ride.rider = {
-                  name: riderInfo.firstName + " " + rider.lastName,
+                  name: riderInfo.firstName + " " + riderInfo.lastName,
                   phone: riderInfo.phone
                 };
-                delete ride.riderEmail;
                 resolve(ride);
               }
             });

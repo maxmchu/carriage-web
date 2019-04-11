@@ -1,8 +1,9 @@
 import * as React from 'react';
 import '../styles/App.scss';
+import '../styles/components/requestForm.scss';
 import { connect } from 'react-redux';
 
-import { Button, Container, Form, Header, Grid, Message, Search } from 'semantic-ui-react';
+import { Button, Container, Divider, Form, Header, Grid, Message, Search } from 'semantic-ui-react';
 import { Moment } from 'moment';
 const moment = require('moment');
 import { SingleDatePicker } from 'react-dates';
@@ -89,6 +90,7 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
           <DashboardNav />
           <Container>
             <Header as={"h1"}>Request a Ride</Header>
+            <Divider />
             <Message positive>
               <Message.Header>Ride request submitted successfully!</Message.Header>
               Requests must be approved by our dispatchers. You can return to the dashboard now.
@@ -101,6 +103,7 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
           <DashboardNav />
           <Container>
             <Header as={"h1"}>Request a Ride</Header>
+            <Divider />
             {
               (this.props.rideSubmitErrMsg === "") ? null :
                 <Message negative>
@@ -122,69 +125,75 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
                   numberOfMonths={1}
                 />
               </Form.Field>
-              <Grid stackable columns='equal'>
-                <Grid.Column>
-                  <Header as={"h3"}>Pickup</Header>
-                  <Form.Group>
-                    <Form.Input
-                      label='Time'
-                      type='time'
-                      name='pickupTime'
-                      value={this.state.pickupTime}
-                      onChange={this.onTimeChange}
-                    />
-                    <Form.Field>
-                      <label>Pickup Location</label>
-                      <Search
-                        loading={this.state.loadingPickup}
-                        onResultSelect={this.handlePickupResultSelect}
-                        onSearchChange={debounce(this.handleSearchChange, 200, { leading: true })}
-                        results={this.state.pickupLocationSuggestions}
-                        value={this.state.pickupLocationString}
-                        name="pickupLocationString"
-                      />
-                    </Form.Field>
-                  </Form.Group>
-                </Grid.Column>
-                <Grid.Column>
-                  <Header as={"h3"}>Dropoff</Header>
-                  <Form.Group>
-                    <Form.Input
-                      label='Time'
-                      type='time'
-                      name='dropoffTime'
-                      value={this.state.dropoffTime}
-                      onChange={this.onTimeChange}
-                    />
-                    <Form.Field>
-                      <label>Dropoff Location</label>
-                      <Search
-                        loading={this.state.loadingDropoff}
-                        onResultSelect={this.handleDropoffResultSelect}
-                        onSearchChange={debounce(this.handleSearchChange, 200, { leading: true })}
-                        results={this.state.dropoffLocationSuggestions}
-                        value={this.state.dropoffLocationString}
-                        name="dropoffLocationString"
-                      />
-                    </Form.Field>
-                  </Form.Group>
-                </Grid.Column>
-              </Grid>
-              <Form.Checkbox
-                label='Check this box if you are a wheelchair user.'
-                checked={this.state.needsWheelchair}
-                onChange={this.onWheelchairChange}
-              />
-              <Form.Checkbox
-                label='Check this box if you need extra space (for example, if you have a leg injury and must use an additional seat to keep your leg straight).'
-                checked={this.state.needsExtraSpace}
-                onChange={this.onExtraSpaceChange}
-              />
-              <Button basic color='blue' as={Link} to={"/dashboard"}>Cancel Ride Request</Button>
-              <Button basic color='green'
-                disabled={!this.state.submitEnabled}
-                onClick={this.handleRideSubmit}
-              >Submit Ride Request</Button>
+
+              <Header as={"h3"}>Pickup</Header>
+              <Form.Group>
+                <Form.Input
+                  label='Time'
+                  type='time'
+                  name='pickupTime'
+                  value={this.state.pickupTime}
+                  onChange={this.onTimeChange}
+                />
+                <Form.Field>
+                  <label>Pickup Location</label>
+                  <Search
+                    loading={this.state.loadingPickup}
+                    onResultSelect={this.handlePickupResultSelect}
+                    onSearchChange={debounce(this.handleSearchChange, 200, { leading: true })}
+                    results={this.state.pickupLocationSuggestions}
+                    value={this.state.pickupLocationString}
+                    name="pickupLocationString"
+                  />
+                </Form.Field>
+              </Form.Group>
+
+
+              <Header as={"h3"}>Dropoff</Header>
+              <Form.Group>
+                <Form.Input
+                  label='Time'
+                  type='time'
+                  name='dropoffTime'
+                  value={this.state.dropoffTime}
+                  onChange={this.onTimeChange}
+                />
+                <Form.Field>
+                  <label>Dropoff Location</label>
+                  <Search
+                    loading={this.state.loadingDropoff}
+                    onResultSelect={this.handleDropoffResultSelect}
+                    onSearchChange={debounce(this.handleSearchChange, 200, { leading: true })}
+                    results={this.state.dropoffLocationSuggestions}
+                    value={this.state.dropoffLocationString}
+                    name="dropoffLocationString"
+                  />
+                </Form.Field>
+              </Form.Group>
+
+              <Header as={"h3"} content="Additional Options" />
+              <Form.Group>
+                <Form.Checkbox
+                  label='Check this box if you are a wheelchair user.'
+                  checked={this.state.needsWheelchair}
+                  onChange={this.onWheelchairChange}
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Checkbox
+                  label='Check this box if you need extra space (for example, if you have a leg injury and must use an additional seat to keep your leg straight).'
+                  checked={this.state.needsExtraSpace}
+                  onChange={this.onExtraSpaceChange}
+                />
+              </Form.Group>
+              <Divider hidden />
+              <Form.Group>
+                <Button basic color='blue' as={Link} to={"/dashboard"}>Cancel Ride Request</Button>
+                <Button basic color='green'
+                  disabled={!this.state.submitEnabled}
+                  onClick={this.handleRideSubmit}
+                  content="Submit Ride Request" />
+              </Form.Group>
             </Form>
           </Container>
         </div>

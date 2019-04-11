@@ -1,0 +1,12 @@
+.ride-card-container > div.ui.card {
+  display: inline-block;
+  margin: 1em 1em 1em 1px !important;
+  white-space: normal;
+  vertical-align: middle;
+}
+.ride-card-container {
+  width: 100%;
+  overflow-x: visible;
+  overflow-y: hidden;
+  white-space: nowrap;
+}

@@ -29,7 +29,10 @@ import {
   RESET_RIDES_STATE,
   PROFILE_UPDATE_REQUEST,
   PROFILE_UPDATE_SUCCESS,
-  PROFILE_UPDATE_FAILURE
+  PROFILE_UPDATE_FAILURE,
+  FETCH_DAY_UPCOMING_RIDES_REQUEST,
+  FETCH_DAY_UPCOMING_RIDES_SUCCESS,
+  FETCH_DAY_UPCOMING_RIDES_FAILURE
 } from "./actionTypes";
 
 import axios from "axios";
@@ -105,8 +108,6 @@ export function handleLocalLoginRequest(data: any) {
     dispatch(localLoginRequest(data));
     axios.post('/auth/login', data).then(
       response => {
-        // console.log("RESPONSE::")
-        // console.log(response.data);
         if (!response.data.err) {
           dispatch(localLoginReturned(response.data));
         } else {
@@ -442,6 +443,45 @@ export function handleProfileUpdateRequest(data) {
       err => {
         dispatch(profileUpdateFailure(err));
         console.error("An error occurred: ", err);
+      }
+    );
+  }
+}
+
+export function fetchDayUpcomingRidesRequest(): IAction {
+  return {
+    type: FETCH_DAY_UPCOMING_RIDES_REQUEST
+  }
+}
+
+export function fetchDayUpcomingRidesSuccess(data): IAction {
+  return {
+    type: FETCH_DAY_UPCOMING_RIDES_SUCCESS,
+    payload: data
+  }
+}
+
+export function fetchDayUpcomingRidesFailure(err): IAction {
+  return {
+    type: FETCH_DAY_UPCOMING_RIDES_FAILURE,
+    payload: err
+  }
+}
+
+export function handleFetchDayUpcomingRidesRequest() {
+  return function (dispatch) {
+    dispatch(fetchDayUpcomingRidesRequest());
+    axios.post('/rides/allUpcomingForDay', {}).then(
+      response => {
+        if (response.data.err) {
+          dispatch(fetchDayUpcomingRidesFailure(response.data.err));
+          console.error("An error occurred: ", response.data.err);
+        } else {
+          dispatch(fetchDayUpcomingRidesSuccess(response.data));
+        }
+      },
+      err => {
+        dispatch(fetchDayUpcomingRidesFailure(err));
       }
     );
   }

@@ -1,7 +1,8 @@
 import * as React from 'react';
 import '../styles/App.scss';
+import '../styles/components/upcomingRides.scss';
 import { connect } from 'react-redux';
-import { Header, Icon, Loader, Segment } from 'semantic-ui-react';
+import { Card, Header, Icon, Loader, Segment } from 'semantic-ui-react';
 
 import { handleFetchUpcomingRidesRequest } from '../redux/actions';
 import { Ride, AccountType } from '../types';
@@ -35,15 +36,17 @@ class UpcomingRides extends React.PureComponent<IUpcomingRidesProps>{
           {
             this.renderRideCount()
           }
-          {
-            this.props.upcomingRides.map((ride) => {
-              return (
-                <RideCard {...ride}
-                  key={"ride" + ride.id}
-                  accountType={this.props.accountType} />
-              );
-            })
-          }
+          <div className={"ride-card-container"}>
+            {
+              this.props.upcomingRides.map((ride) => {
+                return (
+                  <RideCard {...ride}
+                    key={"ride" + ride.id}
+                    accountType={this.props.accountType} />
+                );
+              })
+            }
+          </div>
         </div>
     );
   }

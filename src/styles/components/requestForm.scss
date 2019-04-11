@@ -1,0 +1,9 @@
+.ui.grid.request-form-grid{
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.ui.grid.request-form-grid > div.ui.column.request-form-grid-column{
+  @media screen and (max-width: 767px) {
+    padding: 1rem 0 !important;
+  }
+}

@@ -12,8 +12,6 @@ import {
   RESET_RIDES_STATE
 } from '../actionTypes';
 
-import { concat } from 'lodash';
-
 interface IRideInitialState {
   rideSubmitted: boolean;
   requestingRide: boolean;
