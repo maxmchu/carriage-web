@@ -66,7 +66,7 @@ router.post('/upcoming', (req, res) => {
 router.post('/allUpcomingForDay', (req, res) => {
   try {
     const query = allUpcomingForDay.getQueryParams();
-    documentClient.query(query, function (err, data) {
+    documentClient.scan(query, function (err, data) {
       if (err) {
         console.error(err, err.stack);
         return res.json({ err: err });

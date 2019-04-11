@@ -1,7 +1,7 @@
 import * as React from 'react';
 import '../styles/App.scss';
 
-import { Table } from 'semantic-ui-react';
+import { Table, Icon, Tab } from 'semantic-ui-react';
 import { Ride } from '../types';
 
 const moment = require('moment');
@@ -19,7 +19,7 @@ class RideTable extends React.PureComponent<IRideTableProps> {
 
   public render(): JSX.Element {
     return (this.props.rides.length > 0) ? (
-      <Table>
+      <Table celled>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell content="Pickup Time" />
@@ -40,8 +40,20 @@ class RideTable extends React.PureComponent<IRideTableProps> {
                   <Table.Cell collapsing content={moment(ride.dropoffTime).format("h:mm a")} />
                   <Table.Cell collapsing content={ride.pickupLocationString} />
                   <Table.Cell collapsing content={ride.dropoffLocationString} />
-                  <Table.Cell collapsing content={(ride.rider) ? ride.rider.name : "No rider info"} />
-                  <Table.Cell collapsing content={(ride.driver) ? ride.driver.name : "No driver info"} />
+                  {
+                    (ride.rider) ?
+                      <Table.Cell collapsing>
+                        {ride.rider.name} (<Icon name='phone' /> {ride.rider.phone})
+                      </Table.Cell> :
+                      <Table.Cell collapsing content="No rider info" />
+                  }
+                  {
+                    (ride.driver) ?
+                      <Table.Cell collapsing>
+                        {ride.driver.name} (<Icon name='phone' /> {ride.driver.phone})
+                      </Table.Cell> :
+                      <Table.Cell collapsing content="No driver info" />
+                  }
                   <Table.Cell collapsing content={ride.status} />
                 </Table.Row>
               );

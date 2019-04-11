@@ -13,12 +13,11 @@ module.exports = {
 
     return {
       TableName: process.env.AWS_DYNAMODB_RIDES_TABLENAME,
-      IndexName: 'dropoffTime-index',
       ExpressionAttributeValues: {
         ':ct': currentTime,
         ':de': dayEnd
       },
-      KeyConditionExpression: 'dropoffTime between :ct and :de'
+      FilterExpression: 'dropoffTime between :ct and :de'
     }
   }
 }
