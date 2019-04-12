@@ -10,6 +10,7 @@ const uuidv1 = require('uuid/v1');
 const moment = require('moment');
 const upcoming = require('./upcoming');
 const allUpcomingForDay = require('./allUpcomingForDay');
+const allForDay = require("./allForDay");
 const past = require('./past');
 
 const documentClient = new AWS.DynamoDB.DocumentClient({ region: process.env.AWS_REGION, apiVersion: '2012-08-10' });
@@ -29,7 +30,7 @@ router.post('/request', (req, res) => {
   documentClient.put(putParams, function (err, data) {
     if (err) {
       console.error(err, err.stack);
-      return res.json({ err: err });
+      return res.json({ err });
     } else {
       return res.json(data);
     }
@@ -48,7 +49,7 @@ router.post('/upcoming', (req, res) => {
     documentClient.query(queryParams, function (err, data) {
       if (err) {
         console.error(err, err.stack);
-        return res.json({ err: err });
+        return res.json({ err });
       } else {
         const rides = data.Items;
         Promise.all(upcoming.getRideUserDataPromises(rides, upcomingRidesRequest.accountType)).then((data) => {
@@ -69,7 +70,7 @@ router.post('/allUpcomingForDay', (req, res) => {
     documentClient.scan(query, function (err, data) {
       if (err) {
         console.error(err, err.stack);
-        return res.json({ err: err });
+        return res.json({ err });
       } else {
         const rides = data.Items;
         if (rides.length > 0) {
@@ -90,6 +91,41 @@ router.post('/allUpcomingForDay', (req, res) => {
     return res.json({ err });
   }
 });
+
+router.post('/allForDay', (req, res) => {
+  const request = req.body;
+  try {
+    const { requestedDate } = request;
+    const queryParams = allForDay.getQueryParams(requestedDate);
+    if (queryParams.err) {
+      res.json(queryParams);
+    }
+
+    documentClient.scan(queryParams, function (err, data) {
+      if (err) {
+        console.error(err, err.stack);
+        return res.json({ err });
+      } else {
+        const rides = data.Items;
+        if (rides.length > 0) {
+          Promise.all(upcoming.getRideUserDataPromises(rides, 'driver')).then((data) => {
+            return Promise.all(upcoming.getRideUserDataPromises(data, 'rider')).then((data) => {
+              return Promise.all(upcoming.getLocationDescPromises(data))
+                .then((data) => {
+                  res.json(data);
+                });
+            })
+          });
+        } else {
+          res.json(rides);
+        }
+      }
+    })
+
+  } catch (err) {
+    return res.json({ err });
+  }
+})
 
 router.post('/past', (req, res) => {
   const pastRidesRequest = req.body;
