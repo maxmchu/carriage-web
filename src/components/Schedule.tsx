@@ -10,7 +10,7 @@ import { Button, Divider, Grid, Header, Container, Form, Rail } from 'semantic-u
 import { SingleDatePicker } from 'react-dates';
 import { sortBy } from 'lodash';
 
-import { Ride } from '../types';
+import { Ride, RideStatus } from '../types';
 import DashboardNav from './DashboardNav';
 import RideTable from './RideTable';
 
@@ -28,6 +28,9 @@ interface IScheduleState {
   selectedDate: Moment;
   focused: boolean;
   submitEnabled: boolean;
+  filteredRides: Ride[];
+  pendingRides: Ride[];
+  rejectedRides: Ride[];
 }
 
 class Schedule extends React.Component<IScheduleProps, IScheduleState> {
@@ -40,12 +43,19 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
       showRequestsInSchedule: false,
       selectedDate: currentTime,
       focused: false,
-      submitEnabled: false
+      submitEnabled: false,
+      filteredRides: this.filterOutRequests(this.props.allRidesForDay),
+      pendingRides: this.getPendingRequests(this.props.allRidesForDay),
+      rejectedRides: this.getRejectedRequests(this.props.allRidesForDay)
     }
     this.onDateChange = this.onDateChange.bind(this);
     this.onFocusChange = this.onFocusChange.bind(this);
     this.handleDateSubmit = this.handleDateSubmit.bind(this);
     this.isOutsideRange = this.isOutsideRange.bind(this);
+    this.filterOutRequests = this.filterOutRequests.bind(this);
+    this.getPendingRequests = this.getPendingRequests.bind(this);
+    this.getRejectedRequests = this.getRejectedRequests.bind(this);
+    this.handleTomorrow = this.handleTomorrow.bind(this);
   }
 
   public componentWillMount() {
@@ -86,14 +96,39 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
                     disabled={!this.state.submitEnabled}
                     onClick={this.handleDateSubmit} />
                 </Form.Group>
-
               </Form>
+              <Header as="h4" content="Quick links" />
+              <Button.Group vertical basic>
+                <Button color="green"
+                  content={`Assign today's requests (${this.state.currentDate.format("MMM D")})`}
+                  icon='inbox'
+                  labelPosition='left' />
+                <Button color="green"
+                  content={`View tomorrow's schedule (${this.state.currentDate.clone().add(1, 'day').format("MMM D")})`}
+                  icon='calendar alternate outline'
+                  labelPosition='left'
+                  onClick={this.handleTomorrow} />
+                <Button color="green"
+                  content={`Assign tomorrow's requests (${this.state.currentDate.clone().add(1, 'day').format("MMM D")})`}
+                  icon='inbox'
+                  labelPosition='left' />
+              </Button.Group>
             </Grid.Column>
             <Grid.Column width={13}>
               <Header as="h3">
                 All schduled rides for {this.state.currentDate.format("MMMM Do, YYYY")}
               </Header>
-              <RideTable rides={this.props.allRidesForDay} />
+              <RideTable rides={this.state.filteredRides} />
+
+              <Header as="h3">
+                Pending requests for {this.state.currentDate.format("MMMM Do, YYYY")}
+              </Header>
+              <RideTable rides={this.state.pendingRides} />
+
+              <Header as="h3">
+                Rejected requests for {this.state.currentDate.format("MMMM Do, YYYY")}
+              </Header>
+              <RideTable rides={this.state.rejectedRides} />
             </Grid.Column>
           </Grid>
         </Container>
@@ -119,10 +154,31 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
     });
   }
 
+  private handleTomorrow(event) {
+    const tomorrow = this.state.currentDate.clone().add(1, 'day')
+    this.props.fetchAllRidesForDay(tomorrow.format("YYYY-MM-DD"));
+    this.setState({
+      currentDate: tomorrow,
+      selectedDate: tomorrow
+    });
+  }
+
   private isOutsideRange = () => false;
 
-  private sortAscendingPickup(rides: Ride[]) {
-    return sortBy(rides, ['pickupTime', 'pickupLocationString'])
+  private filterOutRequests(rides: Ride[]) {
+    const filtered = rides.filter((ride) =>
+      ride.status !== RideStatus.CANCELLED && ride.status !== RideStatus.REJECTED);
+    return sortBy(filtered, ['pickupTime', 'pickupLocationString']);
+  }
+
+  private getPendingRequests(rides: Ride[]) {
+    const filtered = rides.filter((ride) => ride.status === RideStatus.PENDING);
+    return sortBy(filtered, ['pickupTime', 'pickupLocationString']);
+  }
+
+  private getRejectedRequests(rides: Ride[]) {
+    const filtered = rides.filter((ride) => ride.status === RideStatus.REJECTED);
+    return sortBy(filtered, ['pickupTime', 'pickupLocationString']);
   }
 
 }
