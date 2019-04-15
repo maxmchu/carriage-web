@@ -40,6 +40,7 @@ import {
 
 import axios from "axios";
 import { RideRequest } from "../types";
+import { sortBy } from "lodash";
 
 interface IAction {
   type: string;
@@ -514,13 +515,14 @@ export function fetchAllRidesForDayFailure(err): IAction {
 export function handleFetchAllRidesForDayRequest(data) {
   return function (dispatch) {
     dispatch(fetchAllRidesForDayRequest(data));
-    axios.post('/rides/allForDay', data).then(
+    axios.post('/rides/allForDay', { requestedDate: data }).then(
       response => {
         if (response.data.err) {
           dispatch(fetchAllRidesForDayFailure(response.data.err));
           console.error("An error occurred: ", response.data.err);
         } else {
-          dispatch(fetchAllRidesForDaySuccess(response.data));
+          const rides = sortBy(response.data, ['pickupTime', 'pickupLocationString'])
+          dispatch(fetchAllRidesForDaySuccess(rides));
         }
       },
       err => {

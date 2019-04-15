@@ -1,7 +1,7 @@
 import * as React from 'react';
 import '../styles/App.scss';
 
-import { Table, Icon, Tab } from 'semantic-ui-react';
+import { Table, Icon, Tab, Segment, Message } from 'semantic-ui-react';
 import { Ride } from '../types';
 
 const moment = require('moment');
@@ -61,9 +61,11 @@ class RideTable extends React.PureComponent<IRideTableProps> {
           }
         </Table.Body>
       </Table>
-    ) : (<div>
-      No rides found.
-    </div>)
+    ) : (
+        <Message warning>
+          <Message.Header content="No rides were found." />
+        </Message>
+      )
   }
 
 }

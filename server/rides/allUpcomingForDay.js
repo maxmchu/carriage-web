@@ -17,7 +17,8 @@ module.exports = {
         ':ct': currentTime,
         ':de': dayEnd
       },
-      FilterExpression: 'dropoffTime between :ct and :de'
+      FilterExpression: 'dropoffTime between :ct and :de',
+      ScanIndexForward: true
     }
   }
 }

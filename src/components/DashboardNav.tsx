@@ -56,6 +56,11 @@ class DashboardNavigation extends React.Component<IDashboardNavProps, IDashboard
               <Menu.Item as={Link} to={"/dashboard/hours"} icon='clock outline' content='Shift hours' /> :
               null
           }
+          {
+            (this.props.accountType === AccountType.DISPATCHER) ?
+              <Menu.Item as={Link} to={"/dashboard/schedule"} icon='alternate calendar outline' content='Schedules' /> :
+              null
+          }
           <Menu.Menu position='right'>
             <Menu.Item className='middle-align'>
               <p>Logged in as <span style={{ fontWeight: "bold" }}>{this.props.firstName}</span></p>

@@ -18,7 +18,8 @@ module.exports = {
           ':ds': dayStart,
           ':de': dayEnd
         },
-        FilterExpression: 'dropoffTime between :ds and :de'
+        FilterExpression: 'pickupTime between :ds and :de',
+        ScanIndexForward: true
       }
     } catch (err) {
       return { err }

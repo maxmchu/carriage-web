@@ -95,6 +95,7 @@ router.post('/allUpcomingForDay', (req, res) => {
 router.post('/allForDay', (req, res) => {
   const request = req.body;
   try {
+    console.log(request);
     const { requestedDate } = request;
     const queryParams = allForDay.getQueryParams(requestedDate);
     if (queryParams.err) {

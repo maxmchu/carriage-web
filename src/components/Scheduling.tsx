@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { Button, Divider, Header, Icon, Loader, List } from 'semantic-ui-react';
 import { handleFetchDayUpcomingRidesRequest, handleFetchAllRidesForDayRequest } from '../redux/actions';
 import { Ride, RideStatus } from '../types';
+import { Link } from 'react-router-dom';
 
 import { Moment } from 'moment';
 import RideTable from './RideTable';
@@ -97,7 +98,7 @@ class Scheduling extends React.Component<ISchedulingProps, ISchedulingState> {
             this.renderUpcomingRides()
         }
         <Divider />
-        <Header as="h2" content="Schedule and summary" />
+        <Header as="h2" content="Summary and Actions" />
         <List horizontal divided relaxed>
           <List.Item>
             <List.Content>
@@ -129,11 +130,16 @@ class Scheduling extends React.Component<ISchedulingProps, ISchedulingState> {
         </List>
         <Divider hidden />
         <Button primary basic
-          content="View complete schedule"
+          content="View today's complete schedule"
           icon='calendar alternate outline'
+          labelPosition='left'
+          as={Link}
+          to={"/dashboard/schedule"} />
+        <Button primary basic
+          content="View today's pending requests"
+          icon='inbox'
           labelPosition='left' />
         <Divider />
-        <Header as="h2" content="Today's pending requests" />
 
       </div>
     )
