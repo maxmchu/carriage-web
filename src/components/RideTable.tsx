@@ -1,7 +1,7 @@
 import * as React from 'react';
 import '../styles/App.scss';
 
-import { Table, Icon, Tab, Segment, Message, StrictTableHeaderCellProps } from 'semantic-ui-react';
+import { Table, Icon, Message, StrictTableHeaderCellProps } from 'semantic-ui-react';
 import { Ride } from '../types';
 import { sortBy } from 'lodash';
 
@@ -55,6 +55,10 @@ class RideTable extends React.Component<IRideTableProps, IRideTableState> {
               onClick={this.handleSort} sorted={this.state.column === "rider.name" ? this.state.direction : undefined} />
             <Table.HeaderCell content="Driver" name="driver.name"
               onClick={this.handleSort} sorted={this.state.column === "driver.name" ? this.state.direction : undefined} />
+            <Table.HeaderCell content="Wheelchair" name="needsWheelchair"
+              onClick={this.handleSort} sorted={this.state.column === "needsWheelchair" ? this.state.direction : undefined} />
+            <Table.HeaderCell content="Extra Space" name="needsExtraSpace"
+              onClick={this.handleSort} sorted={this.state.column === "needsExtraSpace" ? this.state.direction : undefined} />
             <Table.HeaderCell content="Status" name="rideStatus"
               onClick={this.handleSort} sorted={this.state.column === "rideStatus" ? this.state.direction : undefined} />
           </Table.Row>
@@ -82,6 +86,14 @@ class RideTable extends React.Component<IRideTableProps, IRideTableState> {
                       </Table.Cell> :
                       <Table.Cell collapsing content="No driver info" />
                   }
+                  <Table.Cell collapsing content={
+                    (ride.needsWheelchair) ? <Icon name="check circle outline" /> :
+                      <Icon name="times circle outline" />
+                  } />
+                  <Table.Cell collapsing content={
+                    (ride.needsExtraSpace) ? <Icon name="check circle outline" /> :
+                      <Icon name="times circle outline" />
+                  } />
                   <Table.Cell collapsing content={ride.rideStatus} />
                 </Table.Row>
               );

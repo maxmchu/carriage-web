@@ -333,7 +333,9 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
         pickupLocationString: this.state.pickupLocationString,
         dropoffTime: this.state.dropoffTime,
         dropoffLocationId: this.state.dropoffLocationId,
-        dropoffLocationString: this.state.dropoffLocationString
+        dropoffLocationString: this.state.dropoffLocationString,
+        needsWheelchair: this.state.needsWheelchair,
+        needsExtraSpace: this.state.needsExtraSpace
       }
       this.setState({
         submitEnabled: false

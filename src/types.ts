@@ -18,6 +18,8 @@ export interface RideRequest {
   dropoffTime: string;
   dropoffLocationId: number;
   dropoffLocationString: string;
+  needsWheelchair?: boolean;
+  needsExtraSpace?: boolean;
 }
 
 export enum RideStatus {
@@ -44,4 +46,6 @@ export interface Ride {
   rideStatus: RideStatus;
   driver?: RideUserInfo;
   rider?: RideUserInfo;
+  needsWheelchair: boolean;
+  needsExtraSpace: boolean;
 }
