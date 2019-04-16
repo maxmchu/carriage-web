@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Button, Grid, Header, Form, Message } from 'semantic-ui-react';
+import { Button, Grid, Header, Image, Form, Message } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 import '../styles/containers/login.scss';
@@ -37,10 +37,10 @@ class Login extends React.Component<ILoginProps, ILoginState> {
           <div className={"login-background"} />
         </Grid.Column>
         <Grid.Column width={12}>
-          <Header as={"h1"}><Link to={"/"}>ADALift</Link></Header>
-          <Header as={"h3"}>Login</Header>
+          <Image as={Link} to={"/"} src={require("../assets/carriage.svg")} size="small" />
+          <Header as={"h2"}>Login</Header>
           {
-            (this.props.errorMsg == "") ? null :
+            (this.props.errorMsg === "") ? null :
               <Message negative>
                 <Message.Header>There was a problem signing in</Message.Header>
                 <p>{this.props.errorMsg}</p>

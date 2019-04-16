@@ -113,21 +113,21 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
               </Form>
               <Header as="h4" content="Quick links" />
               <Button.Group vertical basic>
-                <Button color="green"
+                <Button
                   content={`View today's schedule (${this.state.today.format("MMM D")})`}
                   icon='calendar alternate outline'
                   labelPosition='left'
                   onClick={this.handleTodaySchedule} />
-                <Button color="green"
+                <Button
                   content={`Assign today's requests (${this.state.today.format("MMM D")})`}
                   icon='inbox'
                   labelPosition='left' />
-                <Button color="green"
+                <Button
                   content={`View tomorrow's schedule (${this.state.today.clone().add(1, 'day').format("MMM D")})`}
                   icon='calendar alternate outline'
                   labelPosition='left'
                   onClick={this.handleTomorrowSchedule} />
-                <Button color="green"
+                <Button
                   content={`Assign tomorrow's requests (${this.state.today.clone().add(1, 'day').format("MMM D")})`}
                   icon='inbox'
                   labelPosition='left' />
@@ -212,7 +212,7 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
 
   private filterOutRequests(rides: Ride[]) {
     const filtered = rides.filter((ride) =>
-      ride.rideStatus !== RideStatus.CANCELLED && ride.rideStatus !== RideStatus.REJECTED);
+      ride.rideStatus !== RideStatus.CANCELLED && ride.rideStatus !== RideStatus.REJECTED && ride.rideStatus !== RideStatus.PENDING);
     return sortBy(filtered, ['pickupTime', 'pickupLocationString']);
   }
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react';
+import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react';
 import { handleLocalRegisterRequest } from '../redux/actions';
 import { Link } from 'react-router-dom';
 import { capitalize } from 'lodash';
@@ -42,11 +42,11 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
           <div className={"login-background"} />
         </Grid.Column>
         <Grid.Column width={12} className={""}>
-          <Header as={"h1"}><Link to={"/"}>ADALift</Link></Header>
-          <Header as={"h3"}>Registration</Header>
+          <Image as={Link} to={"/"} src={require("../assets/carriage.svg")} size="small" />
+          <Header as={"h2"}>Registration</Header>
           {/* TODO: Add state to actually confirm password, and front-end validation */}
           {
-            (this.props.errorMsg == "") ? null :
+            (this.props.errorMsg === "") ? null :
               <Message negative>
                 <Message.Header>There was a problem with your registration</Message.Header>
                 <p>{this.props.errorMsg}</p>
@@ -113,7 +113,7 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
   }
 
   private handleName(name) {
-    if (name.split("-").length == 1) {
+    if (name.split("-").length === 1) {
       return capitalize(name);
     } else {
       return (name.split("-").map(n => capitalize(n))).join('-');

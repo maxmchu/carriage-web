@@ -566,7 +566,7 @@ export function handleFetchAllRequestsForDayRequest(data) {
           console.error("An error occurred: ", response.data.err);
         } else {
           const rides = sortBy(response.data, ['pickupTime', 'pickupLocationString']);
-          dispatch(fetchAllRidesForDaySuccess(rides));
+          dispatch(fetchAllRequestsForDaySuccess(rides));
         }
       },
       err => {
