@@ -15,6 +15,7 @@ import Logout from './containers/Logout';
 import Profile from './containers/Profile';
 import Hours from './containers/Hours';
 import Schedule from './components/Schedule';
+import RideRequests from './containers/RideRequests';
 
 interface IAppProps {
   checkingLogin: boolean;
@@ -80,6 +81,11 @@ class App extends React.Component<IAppProps, IAppState> {
               component={Schedule}
               routeCondition={this.props.user && this.props.user.accountType === AccountType.DISPATCHER}
               redirectTo={"/dashboard"} />
+            <ConditionalRoute exact
+              path={'/dashboard/requests/'}
+              component={RideRequests}
+              routeCondition={this.props.user && this.props.user.accountType === AccountType.DISPATCHER}
+              redirectTo={'/dashboard'} />
           </Switch>
         </Router>
       </div>

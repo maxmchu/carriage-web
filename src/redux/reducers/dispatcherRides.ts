@@ -4,7 +4,10 @@ import {
   FETCH_DAY_UPCOMING_RIDES_FAILURE,
   FETCH_ALL_RIDES_FOR_DAY_REQUEST,
   FETCH_ALL_RIDES_FOR_DAY_SUCCESS,
-  FETCH_ALL_RIDES_FOR_DAY_FAILURE
+  FETCH_ALL_RIDES_FOR_DAY_FAILURE,
+  FETCH_ALL_REQUESTS_FOR_DAY_REQUEST,
+  FETCH_ALL_REQUESTS_FOR_DAY_SUCCESS,
+  FETCH_ALL_REQUESTS_FOR_DAY_FAILURE
 } from '../actionTypes';
 import { Ride } from '../../types';
 
@@ -15,6 +18,9 @@ interface IDispatcherRidesState {
   allRidesForDay: Ride[];
   fetchingAllRidesForDay: boolean;
   allRidesForDayErrMsg: string;
+  allRequestsForDay: Ride[];
+  fetchingAllRequestsForDay: boolean;
+  allRequestsForDayErrMsg: string;
 }
 
 const initialState: IDispatcherRidesState = {
@@ -23,7 +29,10 @@ const initialState: IDispatcherRidesState = {
   upcomingRidesForDayErrMsg: "",
   allRidesForDay: [],
   fetchingAllRidesForDay: false,
-  allRidesForDayErrMsg: ""
+  allRidesForDayErrMsg: "",
+  allRequestsForDay: [],
+  fetchingAllRequestsForDay: false,
+  allRequestsForDayErrMsg: ""
 }
 
 const dispatcherRidesReducer = (state = initialState, action) => {
@@ -32,14 +41,16 @@ const dispatcherRidesReducer = (state = initialState, action) => {
     case FETCH_DAY_UPCOMING_RIDES_REQUEST:
       return {
         ...state,
-        fetchingUpcomingRidesForDay: true
+        fetchingUpcomingRidesForDay: true,
+        upcomingRidesForDayErrMsg: ""
       };
 
     case FETCH_DAY_UPCOMING_RIDES_SUCCESS:
       return {
         ...state,
         fetchingUpcomingRidesForDay: false,
-        upcomingRidesForDay: action.payload
+        upcomingRidesForDay: action.payload,
+        upcomingRidesForDayErrMsg: ""
       };
 
     case FETCH_DAY_UPCOMING_RIDES_FAILURE:
@@ -52,21 +63,45 @@ const dispatcherRidesReducer = (state = initialState, action) => {
     case FETCH_ALL_RIDES_FOR_DAY_REQUEST:
       return {
         ...state,
-        fetchingAllRidesForDay: true
+        fetchingAllRidesForDay: true,
+        allRidesForDayErrMsg: ""
       };
 
     case FETCH_ALL_RIDES_FOR_DAY_SUCCESS:
       return {
         ...state,
         fetchingAllRidesForDay: false,
-        allRidesForDay: action.payload
+        allRidesForDay: action.payload,
+        allRidesForDayErrMsg: ""
       };
 
     case FETCH_ALL_RIDES_FOR_DAY_FAILURE:
       return {
         ...state,
         fetchingAllRidesForDay: false,
-        allRidesForDayErrMsg: ""
+        allRidesForDayErrMsg: action.payload
+      };
+
+    case FETCH_ALL_REQUESTS_FOR_DAY_REQUEST:
+      return {
+        ...state,
+        fetchingAllRequestsForDay: true,
+        allRequestsForDayErrMsg: ""
+      };
+
+    case FETCH_ALL_REQUESTS_FOR_DAY_SUCCESS:
+      return {
+        ...state,
+        fetchingAllRequestsForDay: false,
+        allRequestsForDay: action.payload,
+        allRequestsForDayErrMsg: ""
+      };
+
+    case FETCH_ALL_REQUESTS_FOR_DAY_FAILURE:
+      return {
+        ...state,
+        fetchingAllRequestsForDay: false,
+        allRequestsForDayErrMsg: action.payload
       };
 
     default:

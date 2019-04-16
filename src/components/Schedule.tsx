@@ -82,6 +82,7 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
         <Container>
           <Divider horizontal>
             <Header as="h1" content={`Ride Schedule`} />
+            {this.state.currentDate.format("MMMM Do, YYYY")}
           </Divider>
           <Grid stackable>
             <Grid.Column floated='left' width={3}>
@@ -211,17 +212,17 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
 
   private filterOutRequests(rides: Ride[]) {
     const filtered = rides.filter((ride) =>
-      ride.status !== RideStatus.CANCELLED && ride.status !== RideStatus.REJECTED);
+      ride.rideStatus !== RideStatus.CANCELLED && ride.rideStatus !== RideStatus.REJECTED);
     return sortBy(filtered, ['pickupTime', 'pickupLocationString']);
   }
 
   private getPendingRequests(rides: Ride[]) {
-    const filtered = rides.filter((ride) => ride.status === RideStatus.PENDING);
+    const filtered = rides.filter((ride) => ride.rideStatus === RideStatus.PENDING);
     return sortBy(filtered, ['pickupTime', 'pickupLocationString']);
   }
 
   private getRejectedRequests(rides: Ride[]) {
-    const filtered = rides.filter((ride) => ride.status === RideStatus.REJECTED);
+    const filtered = rides.filter((ride) => ride.rideStatus === RideStatus.REJECTED);
     return sortBy(filtered, ['pickupTime', 'pickupLocationString']);
   }
 

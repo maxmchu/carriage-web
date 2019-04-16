@@ -10,7 +10,7 @@ const moment = require('moment');
 
 interface IRideCardProps {
   accountType: AccountType;
-  status: RideStatus;
+  rideStatus: RideStatus;
   pickupTime: string;
   pickupLocationString: string;
   dropoffTime: string;
@@ -33,14 +33,14 @@ class RideCard extends React.PureComponent<IRideCardProps> {
 
   public render() {
     return (
-      <Card color={this.statusColor(this.props.status)}>
+      <Card color={this.statusColor(this.props.rideStatus)}>
         <Card.Content>
           <Card.Header
             content={moment(this.props.pickupTime.split(" ")[0]).format("MMMM Do")}
             className="ride-card-date" />
           <Card.Meta
-            content={capitalize(this.props.status)}
-            className={`${this.statusColor(this.props.status)} ride-status`} />
+            content={capitalize(this.props.rideStatus)}
+            className={`${this.statusColor(this.props.rideStatus)} ride-status`} />
         </Card.Content>
         <Card.Content>
           <Card.Header content={`${this.formatTime(this.props.pickupTime)} pickup`} />

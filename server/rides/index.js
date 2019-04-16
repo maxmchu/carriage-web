@@ -11,6 +11,7 @@ const moment = require('moment');
 const upcoming = require('./upcoming');
 const allUpcomingForDay = require('./allUpcomingForDay');
 const allForDay = require("./allForDay");
+const allRequestsForDay = require("./allRequestsForDay");
 const past = require('./past');
 
 const documentClient = new AWS.DynamoDB.DocumentClient({ region: process.env.AWS_REGION, apiVersion: '2012-08-10' });
@@ -18,7 +19,7 @@ const documentClient = new AWS.DynamoDB.DocumentClient({ region: process.env.AWS
 router.post('/request', (req, res) => {
   const rideRequest = req.body;
   rideRequest.id = uuidv1();
-  rideRequest.status = 'pending';
+  rideRequest.rideStatus = 'pending';
   rideRequest.requestTime = moment().format("YYYY-MM-DD HH:mm:ss");
   rideRequest.pickupTime = rideRequest.date + " " + rideRequest.pickupTime;
   rideRequest.dropoffTime = rideRequest.date + " " + rideRequest.dropoffTime;
@@ -121,11 +122,44 @@ router.post('/allForDay', (req, res) => {
         }
       }
     })
-
   } catch (err) {
     return res.json({ err });
   }
-})
+});
+
+router.post('/allRequestsForDay', (req, res) => {
+  const request = req.body;
+  try {
+    const { requestedDate } = request;
+    const queryParams = allRequestsForDay.getQueryParams(requestedDate);
+    if (queryParams.err) {
+      res.json(queryParams);
+    }
+
+    documentClient.scan(queryParams, function (err, data) {
+      if (err) {
+        console.error(err, err.stack);
+        return res.json({ err });
+      } else {
+        const rides = data.Items;
+        if (rides.length > 0) {
+          Promise.all(upcoming.getRideUserDataPromises(rides, 'driver')).then((data) => {
+            return Promise.all(upcoming.getRideUserDataPromises(data, 'rider')).then((data) => {
+              return Promise.all(upcoming.getLocationDescPromises(data))
+                .then((data) => {
+                  res.json(data);
+                });
+            })
+          });
+        } else {
+          res.json(rides);
+        }
+      }
+    });
+  } catch (err) {
+    return res.json({ err })
+  }
+});
 
 router.post('/past', (req, res) => {
   const pastRidesRequest = req.body;

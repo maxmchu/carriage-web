@@ -2,7 +2,7 @@ import * as React from 'react';
 import '../styles/App.scss';
 import { connect } from 'react-redux';
 
-import { Header } from 'semantic-ui-react';
+import { Container, Divider, Header } from 'semantic-ui-react';
 import { Moment } from 'moment';
 const moment = require('moment');
 import { SingleDatePicker } from 'react-dates';
@@ -13,20 +13,30 @@ interface IRequestsProps {
 }
 
 interface IRequestsState {
-
+  currentDate: Moment;
+  today: Moment;
 }
 
 class RideRequests extends React.Component<IRequestsProps, IRequestsState> {
 
   public constructor(props) {
     super(props);
+    const currentTime = moment();
+    this.state = {
+      currentDate: currentTime,
+      today: currentTime
+    }
   }
 
   public render() {
     return (
       <div>
         <DashboardNav />
-        <Header as="h1" content="Scheduling" />
+        <Container>
+          <Divider horizontal>
+            <Header as="h1" content="Ride Requests" />
+          </Divider>
+        </Container>
       </div>
     );
   }

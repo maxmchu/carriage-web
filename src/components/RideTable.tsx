@@ -55,8 +55,8 @@ class RideTable extends React.Component<IRideTableProps, IRideTableState> {
               onClick={this.handleSort} sorted={this.state.column === "rider.name" ? this.state.direction : undefined} />
             <Table.HeaderCell content="Driver" name="driver.name"
               onClick={this.handleSort} sorted={this.state.column === "driver.name" ? this.state.direction : undefined} />
-            <Table.HeaderCell content="Status" name="status"
-              onClick={this.handleSort} sorted={this.state.column === "status" ? this.state.direction : undefined} />
+            <Table.HeaderCell content="Status" name="rideStatus"
+              onClick={this.handleSort} sorted={this.state.column === "rideStatus" ? this.state.direction : undefined} />
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -82,7 +82,7 @@ class RideTable extends React.Component<IRideTableProps, IRideTableState> {
                       </Table.Cell> :
                       <Table.Cell collapsing content="No driver info" />
                   }
-                  <Table.Cell collapsing content={ride.status} />
+                  <Table.Cell collapsing content={ride.rideStatus} />
                 </Table.Row>
               );
             })

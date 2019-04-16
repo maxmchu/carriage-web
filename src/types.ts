@@ -41,7 +41,7 @@ export interface Ride {
   dropoffTime: string;
   dropoffLocationId: number;
   dropoffLocationString: string;
-  status: RideStatus;
+  rideStatus: RideStatus;
   driver?: RideUserInfo;
   rider?: RideUserInfo;
 }

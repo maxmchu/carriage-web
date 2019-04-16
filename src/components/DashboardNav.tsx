@@ -37,7 +37,6 @@ class DashboardNavigation extends React.Component<IDashboardNavProps, IDashboard
     window.removeEventListener("resize", this.updateWidth);
   }
 
-  // TODO: Fix responsiveness
   public render() {
     return (this.state.width >= 768) ?
       (
@@ -59,6 +58,11 @@ class DashboardNavigation extends React.Component<IDashboardNavProps, IDashboard
           {
             (this.props.accountType === AccountType.DISPATCHER) ?
               <Menu.Item as={Link} to={"/dashboard/schedule"} icon='alternate calendar outline' content='Schedules' /> :
+              null
+          }
+          {
+            (this.props.accountType === AccountType.DISPATCHER) ?
+              <Menu.Item as={Link} to={"/dashboard/requests"} icon='inbox' content='Requests' /> :
               null
           }
           <Menu.Menu position='right'>
@@ -91,15 +95,22 @@ class DashboardNavigation extends React.Component<IDashboardNavProps, IDashboard
                     <Dropdown.Item as={Link} to={"/dashboard/hours"} icon='clock outline' text='Shift hours' /> :
                     null
                 }
+                {
+                  (this.props.accountType === AccountType.DISPATCHER) ?
+                    <Dropdown.Item as={Link} to={"/dashboard/schedule"} icon="alternate calendar outline" content="Schedules" /> :
+                    null
+                }
+                {
+                  (this.props.accountType === AccountType.DISPATCHER) ?
+                    <Dropdown.Item as={Link} to={"/dashboard/requests"} icon="inbox" content="Requests" /> :
+                    null
+                }
                 <Dropdown.Item as={Link} to={"/logout"} icon='log out' text='Log out' />
               </Dropdown.Menu>
             </Dropdown>
           </Menu.Menu>
         </Responsive>
       )
-
-
-
   }
 
   private updateWidth() {

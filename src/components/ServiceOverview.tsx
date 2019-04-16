@@ -35,7 +35,7 @@ interface ISchedulingState {
   todayStats: DayStats;
 }
 
-class Scheduling extends React.Component<ISchedulingProps, ISchedulingState> {
+class ServiceOverview extends React.Component<ISchedulingProps, ISchedulingState> {
 
   public constructor(props) {
     super(props);
@@ -133,12 +133,12 @@ class Scheduling extends React.Component<ISchedulingProps, ISchedulingState> {
           content="View today's complete schedule"
           icon='calendar alternate outline'
           labelPosition='left'
-          as={Link}
-          to={"/dashboard/schedule"} />
+          as={Link} to={"/dashboard/schedule"} />
         <Button primary basic
           content="View today's pending requests"
           icon='inbox'
-          labelPosition='left' />
+          labelPosition='left'
+          as={Link} to={"/dashboard/requests"} />
         <Divider />
 
       </div>
@@ -148,12 +148,12 @@ class Scheduling extends React.Component<ISchedulingProps, ISchedulingState> {
   private getRidesInProgress(): Ride[] {
     console.log(this.props.upcomingRidesForDay);
     return this.props.upcomingRidesForDay.filter((ride) =>
-      this.state.currentTime.isBetween(ride.pickupTime, ride.dropoffTime) && ride.status === RideStatus.CONFIRMED);
+      this.state.currentTime.isBetween(ride.pickupTime, ride.dropoffTime) && ride.rideStatus === RideStatus.CONFIRMED);
   }
 
   private getUpcomingRides(): Ride[] {
     return this.props.upcomingRidesForDay.filter((ride) =>
-      this.state.currentTime.isBefore(ride.pickupTime) && ride.status === RideStatus.CONFIRMED);
+      this.state.currentTime.isBefore(ride.pickupTime) && ride.rideStatus === RideStatus.CONFIRMED);
   }
 
   private renderRidesInProgress(): JSX.Element {
@@ -187,7 +187,7 @@ class Scheduling extends React.Component<ISchedulingProps, ISchedulingState> {
       totalPending: 0
     }
     for (const ride of rides) {
-      switch (ride.status) {
+      switch (ride.rideStatus) {
         case RideStatus.CONFIRMED:
           stats.totalConfirmed++;
           break;
@@ -221,4 +221,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Scheduling);
+export default connect(mapStateToProps, mapDispatchToProps)(ServiceOverview);

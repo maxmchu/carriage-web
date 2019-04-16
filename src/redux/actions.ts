@@ -35,7 +35,10 @@ import {
   FETCH_DAY_UPCOMING_RIDES_FAILURE,
   FETCH_ALL_RIDES_FOR_DAY_REQUEST,
   FETCH_ALL_RIDES_FOR_DAY_SUCCESS,
-  FETCH_ALL_RIDES_FOR_DAY_FAILURE
+  FETCH_ALL_RIDES_FOR_DAY_FAILURE,
+  FETCH_ALL_REQUESTS_FOR_DAY_REQUEST,
+  FETCH_ALL_REQUESTS_FOR_DAY_SUCCESS,
+  FETCH_ALL_REQUESTS_FOR_DAY_FAILURE
 } from "./actionTypes";
 
 import axios from "axios";
@@ -527,6 +530,47 @@ export function handleFetchAllRidesForDayRequest(data) {
       },
       err => {
         dispatch(fetchAllRidesForDayFailure(err));
+      }
+    );
+  }
+}
+
+export function fetchAllRequestsForDayRequest(data): IAction {
+  return {
+    type: FETCH_ALL_REQUESTS_FOR_DAY_REQUEST,
+    payload: data
+  };
+}
+
+export function fetchAllRequestsForDaySuccess(data): IAction {
+  return {
+    type: FETCH_ALL_REQUESTS_FOR_DAY_SUCCESS,
+    payload: data
+  };
+}
+
+export function fetchAllRequestsForDayFailure(err): IAction {
+  return {
+    type: FETCH_ALL_REQUESTS_FOR_DAY_FAILURE,
+    payload: err
+  };
+}
+
+export function handleFetchAllRequestsForDayRequest(data) {
+  return function (dispatch) {
+    dispatch(fetchAllRequestsForDayRequest(data));
+    axios.post('/rides/allRequestsForDay', { requestedDate: data }).then(
+      response => {
+        if (response.data.err) {
+          dispatch(fetchAllRequestsForDayFailure(response.data.err));
+          console.error("An error occurred: ", response.data.err);
+        } else {
+          const rides = sortBy(response.data, ['pickupTime', 'pickupLocationString']);
+          dispatch(fetchAllRidesForDaySuccess(rides));
+        }
+      },
+      err => {
+        dispatch(fetchAllRequestsForDayFailure(err));
       }
     );
   }

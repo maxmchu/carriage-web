@@ -12,7 +12,7 @@ import DashboardNav from '../components/DashboardNav';
 import { resetRequestRideForm } from '../redux/actions';
 import UpcomingRides from '../components/UpcomingRides';
 import PastRides from '../components/PastRides';
-import Scheduling from '../components/Scheduling';
+import ServiceOverview from '../components/ServiceOverview';
 
 interface IDashboardProps {
   firstName: string;
@@ -75,7 +75,6 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         <DashboardNav />
         <Container>
           <Header as={"h1"}>Upcoming Rides</Header>
-
           <UpcomingRides />
           <Header as={"h1"}>Past Rides</Header>
           <PastRides />
@@ -89,7 +88,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
       <div>
         <DashboardNav />
         <Container>
-          <Scheduling />
+          <ServiceOverview />
         </Container>
       </div>
     )
