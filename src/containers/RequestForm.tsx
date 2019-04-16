@@ -3,7 +3,7 @@ import '../styles/App.scss';
 import '../styles/components/requestForm.scss';
 import { connect } from 'react-redux';
 
-import { Button, Container, Divider, Form, Header, Grid, Message, Search } from 'semantic-ui-react';
+import { Button, Container, Divider, Form, Header, Message, Search } from 'semantic-ui-react';
 import { Moment } from 'moment';
 const moment = require('moment');
 import { SingleDatePicker } from 'react-dates';

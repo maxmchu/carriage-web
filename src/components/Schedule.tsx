@@ -6,7 +6,7 @@ import { Moment } from 'moment';
 const moment = require('moment');
 import { handleFetchAllRidesForDayRequest } from '../redux/actions';
 
-import { Button, Divider, Grid, Header, Container, Form, Rail } from 'semantic-ui-react';
+import { Button, Divider, Grid, Header, Container, Form, Loader, Message } from 'semantic-ui-react';
 import { SingleDatePicker } from 'react-dates';
 import { sortBy } from 'lodash';
 
@@ -24,6 +24,7 @@ interface IScheduleProps {
 
 interface IScheduleState {
   currentDate: Moment;
+  today: Moment;
   showRequestsInSchedule: boolean;
   selectedDate: Moment;
   focused: boolean;
@@ -40,6 +41,7 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
     const currentTime = moment();
     this.state = {
       currentDate: currentTime,
+      today: currentTime,
       showRequestsInSchedule: false,
       selectedDate: currentTime,
       focused: false,
@@ -55,11 +57,22 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
     this.filterOutRequests = this.filterOutRequests.bind(this);
     this.getPendingRequests = this.getPendingRequests.bind(this);
     this.getRejectedRequests = this.getRejectedRequests.bind(this);
-    this.handleTomorrow = this.handleTomorrow.bind(this);
+    this.handleTomorrowSchedule = this.handleTomorrowSchedule.bind(this);
+    this.handleTodaySchedule = this.handleTodaySchedule.bind(this);
   }
 
   public componentWillMount() {
     this.props.fetchAllRidesForDay(this.state.currentDate.format("YYYY-MM-DD"));
+  }
+
+  public componentDidUpdate(prevProps) {
+    if (prevProps.allRidesForDay !== this.props.allRidesForDay) {
+      this.setState({
+        filteredRides: this.filterOutRequests(this.props.allRidesForDay),
+        pendingRides: this.getPendingRequests(this.props.allRidesForDay),
+        rejectedRides: this.getRejectedRequests(this.props.allRidesForDay)
+      });
+    }
   }
 
   public render(): JSX.Element {
@@ -68,7 +81,7 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
         <DashboardNav />
         <Container>
           <Divider horizontal>
-            <Header as="h1" content={`Ride Schedule and Requests`} />
+            <Header as="h1" content={`Ride Schedule`} />
           </Divider>
           <Grid stackable>
             <Grid.Column floated='left' width={3}>
@@ -100,16 +113,21 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
               <Header as="h4" content="Quick links" />
               <Button.Group vertical basic>
                 <Button color="green"
-                  content={`Assign today's requests (${this.state.currentDate.format("MMM D")})`}
+                  content={`View today's schedule (${this.state.today.format("MMM D")})`}
+                  icon='calendar alternate outline'
+                  labelPosition='left'
+                  onClick={this.handleTodaySchedule} />
+                <Button color="green"
+                  content={`Assign today's requests (${this.state.today.format("MMM D")})`}
                   icon='inbox'
                   labelPosition='left' />
                 <Button color="green"
-                  content={`View tomorrow's schedule (${this.state.currentDate.clone().add(1, 'day').format("MMM D")})`}
+                  content={`View tomorrow's schedule (${this.state.today.clone().add(1, 'day').format("MMM D")})`}
                   icon='calendar alternate outline'
                   labelPosition='left'
-                  onClick={this.handleTomorrow} />
+                  onClick={this.handleTomorrowSchedule} />
                 <Button color="green"
-                  content={`Assign tomorrow's requests (${this.state.currentDate.clone().add(1, 'day').format("MMM D")})`}
+                  content={`Assign tomorrow's requests (${this.state.today.clone().add(1, 'day').format("MMM D")})`}
                   icon='inbox'
                   labelPosition='left' />
               </Button.Group>
@@ -118,17 +136,35 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
               <Header as="h3">
                 All schduled rides for {this.state.currentDate.format("MMMM Do, YYYY")}
               </Header>
-              <RideTable rides={this.state.filteredRides} />
+              {
+                (this.props.fetchingAllRidesForDay) ?
+                  <Message >
+                    <Loader active inline="centered" content="Loading scheduled rides" />
+                  </Message> :
+                  <RideTable rides={this.state.filteredRides} />
+              }
 
               <Header as="h3">
                 Pending requests for {this.state.currentDate.format("MMMM Do, YYYY")}
               </Header>
-              <RideTable rides={this.state.pendingRides} />
+              {
+                (this.props.fetchingAllRidesForDay) ?
+                  <Message>
+                    <Loader active inline="centered" content="Loading pending requests" />
+                  </Message> :
+                  <RideTable rides={this.state.pendingRides} />
+              }
 
               <Header as="h3">
                 Rejected requests for {this.state.currentDate.format("MMMM Do, YYYY")}
               </Header>
-              <RideTable rides={this.state.rejectedRides} />
+              {
+                (this.props.fetchingAllRidesForDay) ?
+                  <Message>
+                    <Loader active inline="centered" content="Loading rejected requests" />
+                  </Message> :
+                  <RideTable rides={this.state.rejectedRides} />
+              }
             </Grid.Column>
           </Grid>
         </Container>
@@ -154,12 +190,20 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
     });
   }
 
-  private handleTomorrow(event) {
-    const tomorrow = this.state.currentDate.clone().add(1, 'day')
+  private handleTomorrowSchedule(event) {
+    const tomorrow = this.state.today.clone().add(1, 'day')
     this.props.fetchAllRidesForDay(tomorrow.format("YYYY-MM-DD"));
     this.setState({
       currentDate: tomorrow,
       selectedDate: tomorrow
+    });
+  }
+
+  private handleTodaySchedule(event) {
+    this.props.fetchAllRidesForDay(this.state.today.format("YYYY-MM-DD"));
+    this.setState({
+      currentDate: this.state.today,
+      selectedDate: this.state.today
     });
   }
 
