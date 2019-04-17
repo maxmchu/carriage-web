@@ -1,7 +1,7 @@
 import * as React from 'react';
 import '../styles/App.scss';
 
-import { Table, Icon, Message, StrictTableHeaderCellProps } from 'semantic-ui-react';
+import { Button, Table, Icon, Message, StrictTableHeaderCellProps } from 'semantic-ui-react';
 import { Ride } from '../types';
 import { sortBy } from 'lodash';
 
@@ -9,6 +9,7 @@ const moment = require('moment');
 
 interface IRideTableProps {
   rides: Ride[];
+  showEdit?: boolean;
 }
 
 interface IRideTableState {
@@ -40,7 +41,7 @@ class RideTable extends React.Component<IRideTableProps, IRideTableState> {
 
   public render(): JSX.Element {
     return (this.state.data.length > 0) ? (
-      <Table celled sortable>
+      <Table celled sortable compact>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell content="Pickup Time" name="pickupTime"
@@ -61,6 +62,7 @@ class RideTable extends React.Component<IRideTableProps, IRideTableState> {
               onClick={this.handleSort} sorted={this.state.column === "needsExtraSpace" ? this.state.direction : undefined} />
             <Table.HeaderCell content="Status" name="rideStatus"
               onClick={this.handleSort} sorted={this.state.column === "rideStatus" ? this.state.direction : undefined} />
+            {(this.props.showEdit) ? <Table.HeaderCell /> : null}
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -95,6 +97,13 @@ class RideTable extends React.Component<IRideTableProps, IRideTableState> {
                       <Icon name="times circle outline" color="red" />
                   } />
                   <Table.Cell collapsing content={ride.rideStatus} />
+                  {
+                    (this.props.showEdit) ?
+                      <Table.Cell>
+                        <Button basic icon="pencil" color="blue" />
+                      </Table.Cell> : null
+                  }
+
                 </Table.Row>
               );
             })

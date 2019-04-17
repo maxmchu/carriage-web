@@ -38,7 +38,10 @@ import {
   FETCH_ALL_RIDES_FOR_DAY_FAILURE,
   FETCH_ALL_REQUESTS_FOR_DAY_REQUEST,
   FETCH_ALL_REQUESTS_FOR_DAY_SUCCESS,
-  FETCH_ALL_REQUESTS_FOR_DAY_FAILURE
+  FETCH_ALL_REQUESTS_FOR_DAY_FAILURE,
+  UPDATE_RIDES_REQUEST,
+  UPDATE_RIDES_SUCCESS,
+  UPDATE_RIDES_FAILURE
 } from "./actionTypes";
 
 import axios from "axios";
@@ -571,6 +574,46 @@ export function handleFetchAllRequestsForDayRequest(data) {
       },
       err => {
         dispatch(fetchAllRequestsForDayFailure(err));
+      }
+    );
+  }
+}
+
+export function updateRidesRequest(data): IAction {
+  return {
+    type: UPDATE_RIDES_REQUEST,
+    payload: data
+  };
+}
+
+export function updateRidesSuccess(data): IAction {
+  return {
+    type: UPDATE_RIDES_SUCCESS,
+    payload: data
+  };
+}
+
+export function updateRidesFailure(err): IAction {
+  return {
+    type: UPDATE_RIDES_FAILURE,
+    payload: err
+  };
+}
+
+export function handleUpdateRidesRequest(data) {
+  return function (dispatch) {
+    dispatch(updateRidesRequest(data));
+    axios.post('/rides/update', { rides: data }).then(
+      response => {
+        if (response.data.err) {
+          dispatch(updateRidesFailure(response.data.err));
+          console.error("An error occurred: ", response.data.err);
+        } else {
+          dispatch(updateRidesSuccess(response.data));
+        }
+      },
+      err => {
+        dispatch(updateRidesFailure(err));
       }
     );
   }
