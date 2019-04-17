@@ -102,22 +102,27 @@ class RideRequests extends React.Component<IRequestsProps, IRequestsState> {
               </Grid.Column>
               <Grid.Column width={12}>
                 <Header as="h4" content="Quick actions" />
-                <Button.Group>
-                  <Button basic color="blue"
+                <Button.Group vertical>
+                  <Button basic icon={'inbox'} labelPosition='left'
                     content={`View today's requests (${this.state.today.format("MMM D")})`}
-                    icon={'inbox'} labelPosition='left'
                     onClick={this.viewTodaysRequests} />
-                  <Button basic color="blue"
+                  <Button basic icon={'inbox'} labelPosition='left'
                     content={`View tomorrow's requests (${this.state.today.clone().add(1, 'day').format("MMM D")})`}
-                    icon={'inbox'} labelPosition='left'
                     onClick={this.viewTomorrowsRequests} />
+                </Button.Group>
+                <Button.Group vertical>
+                  <Button basic icon="setting" labelPosition="left"
+                    content={`Auto-schedule today's requests (${this.state.today.format("MMM D")})`} />
+                  <Button basic icon="setting" labelPosition="left"
+                    content={`Auto-schedule tomorrow's requests (${this.state.today.clone().add(1, 'day').format("MMM D")})`} />
                 </Button.Group>
               </Grid.Column>
             </Grid.Row>
           </Grid>
+          <Header as="h3" content="Pending requests" />
           <RideTable rides={this.state.data} />
         </Container>
-      </div>
+      </div >
     );
   }
 

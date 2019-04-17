@@ -65,7 +65,10 @@ class Profile extends React.Component<IProfileProps, IProfileState> {
                 <Message.Header content={this.props.updateSuccessMsg} />
               </Message> : null
           }
-          <Header as={"h1"}>Your Profile ({this.props.email})</Header>
+          <Divider horizontal>
+            <Header as={"h1"}>Your Profile</Header>
+            {this.props.email}
+          </Divider>
           <Form>
             <Form.Group>
               <Checkbox toggle

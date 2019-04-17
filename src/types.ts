@@ -44,6 +44,7 @@ export interface Ride {
   dropoffLocationId: number;
   dropoffLocationString: string;
   rideStatus: RideStatus;
+  driverEmail?: string;
   driver?: RideUserInfo;
   rider?: RideUserInfo;
   needsWheelchair: boolean;
