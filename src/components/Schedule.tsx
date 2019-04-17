@@ -212,7 +212,7 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
 
   private filterOutRequests(rides: Ride[]) {
     const filtered = rides.filter((ride) =>
-      ride.rideStatus !== RideStatus.CANCELLED && ride.rideStatus !== RideStatus.REJECTED && ride.rideStatus !== RideStatus.PENDING);
+      ride.rideStatus !== RideStatus.REJECTED && ride.rideStatus !== RideStatus.PENDING);
     return sortBy(filtered, ['pickupTime', 'pickupLocationString']);
   }
 

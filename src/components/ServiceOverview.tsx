@@ -103,7 +103,7 @@ class ServiceOverview extends React.Component<ISchedulingProps, ISchedulingState
           <List.Item>
             <List.Content>
               <List.Header>
-                <Icon name='check circle outline' />
+                <Icon name='check circle outline' color="green" />
                 Confirmed rides
               </List.Header>
               <List.Description content={(this.props.fetchingAllRidesForDay) ? "Loading" : this.state.todayStats.totalConfirmed + " rides"} />
@@ -112,7 +112,7 @@ class ServiceOverview extends React.Component<ISchedulingProps, ISchedulingState
           <List.Item>
             <List.Content>
               <List.Header>
-                <Icon name='inbox' />
+                <Icon name='inbox' color="blue" />
                 Total requests received
               </List.Header>
               <List.Description content={(this.props.fetchingAllRidesForDay) ? "Loading" : this.state.todayStats.totalRequests + " requests"} />
@@ -121,7 +121,7 @@ class ServiceOverview extends React.Component<ISchedulingProps, ISchedulingState
           <List.Item>
             <List.Content>
               <List.Header>
-                <Icon name='question circle outline' />
+                <Icon name='question circle outline' color="blue" />
                 Pending requests
               </List.Header>
               <List.Description content={(this.props.fetchingAllRidesForDay) ? "Loading" : this.state.todayStats.totalPending + " pending"} />

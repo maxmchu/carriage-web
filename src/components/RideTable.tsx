@@ -87,12 +87,12 @@ class RideTable extends React.Component<IRideTableProps, IRideTableState> {
                       <Table.Cell collapsing content="No driver info" />
                   }
                   <Table.Cell collapsing content={
-                    (ride.needsWheelchair) ? <Icon name="check circle outline" /> :
-                      <Icon name="times circle outline" />
+                    (ride.needsWheelchair) ? <Icon name="check circle outline" color="green" /> :
+                      <Icon name="times circle outline" color="red" />
                   } />
                   <Table.Cell collapsing content={
-                    (ride.needsExtraSpace) ? <Icon name="check circle outline" /> :
-                      <Icon name="times circle outline" />
+                    (ride.needsExtraSpace) ? <Icon name="check circle outline" color="green" /> :
+                      <Icon name="times circle outline" color="red" />
                   } />
                   <Table.Cell collapsing content={ride.rideStatus} />
                 </Table.Row>

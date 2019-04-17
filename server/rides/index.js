@@ -8,11 +8,14 @@ const router = express.Router();
 const AWS = require('aws-sdk');
 const uuidv1 = require('uuid/v1');
 const moment = require('moment');
+const _ = require('lodash');
+
 const upcoming = require('./upcoming');
 const allUpcomingForDay = require('./allUpcomingForDay');
 const allForDay = require("./allForDay");
 const allRequestsForDay = require("./allRequestsForDay");
 const past = require('./past');
+const update = require('./update');
 
 const documentClient = new AWS.DynamoDB.DocumentClient({ region: process.env.AWS_REGION, apiVersion: '2012-08-10' });
 
@@ -176,6 +179,25 @@ router.post('/past', (req, res) => {
     }
   });
 
+});
+
+router.post('/update', (req, res) => {
+  try {
+    const updateRequest = req.body;
+    const { rides } = updateRequest;
+
+    const batches = _.chunk(rides, 25);
+    const promises = batches.map((batch) => update.getBatchPromise(batch));
+
+    Promise.all(promises).then((data) => {
+      res.json({ success: true });
+    }).catch((err) => {
+      res.json({ err });
+    });
+
+  } catch (err) {
+    res.json(err);
+  }
 });
 
 module.exports = router;
