@@ -142,7 +142,7 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
                   <Message >
                     <Loader active inline="centered" content="Loading scheduled rides" />
                   </Message> :
-                  <RideTable rides={this.state.filteredRides} />
+                  <RideTable rides={this.state.filteredRides} showEdit />
               }
 
               <Header as="h3">
@@ -153,7 +153,7 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
                   <Message>
                     <Loader active inline="centered" content="Loading pending requests" />
                   </Message> :
-                  <RideTable rides={this.state.pendingRides} />
+                  <RideTable rides={this.state.pendingRides} showEdit />
               }
 
               <Header as="h3">
@@ -164,7 +164,7 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
                   <Message>
                     <Loader active inline="centered" content="Loading rejected requests" />
                   </Message> :
-                  <RideTable rides={this.state.rejectedRides} />
+                  <RideTable rides={this.state.rejectedRides} showEdit />
               }
             </Grid.Column>
           </Grid>

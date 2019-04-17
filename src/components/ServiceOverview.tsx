@@ -2,7 +2,7 @@ import * as React from 'react';
 import '../styles/App.scss';
 import { connect } from 'react-redux';
 
-import { Button, Divider, Header, Icon, Loader, List } from 'semantic-ui-react';
+import { Button, Divider, Header, Icon, Loader, List, Statistic } from 'semantic-ui-react';
 import { handleFetchDayUpcomingRidesRequest, handleFetchAllRidesForDayRequest } from '../redux/actions';
 import { Ride, RideStatus } from '../types';
 import { Link } from 'react-router-dom';
@@ -99,35 +99,32 @@ class ServiceOverview extends React.Component<ISchedulingProps, ISchedulingState
         }
         <Divider />
         <Header as="h2" content="Summary and Actions" />
-        <List horizontal divided relaxed>
-          <List.Item>
-            <List.Content>
-              <List.Header>
-                <Icon name='check circle outline' color="green" />
-                Confirmed rides
-              </List.Header>
-              <List.Description content={(this.props.fetchingAllRidesForDay) ? "Loading" : this.state.todayStats.totalConfirmed + " rides"} />
-            </List.Content>
-          </List.Item>
-          <List.Item>
-            <List.Content>
-              <List.Header>
-                <Icon name='inbox' color="blue" />
-                Total requests received
-              </List.Header>
-              <List.Description content={(this.props.fetchingAllRidesForDay) ? "Loading" : this.state.todayStats.totalRequests + " requests"} />
-            </List.Content>
-          </List.Item>
-          <List.Item>
-            <List.Content>
-              <List.Header>
-                <Icon name='question circle outline' color="blue" />
-                Pending requests
-              </List.Header>
-              <List.Description content={(this.props.fetchingAllRidesForDay) ? "Loading" : this.state.todayStats.totalPending + " pending"} />
-            </List.Content>
-          </List.Item>
-        </List>
+        <Statistic.Group size="small">
+          <Statistic>
+            <Statistic.Value>
+              {(this.props.fetchingAllRidesForDay) ? "..." : this.state.todayStats.totalConfirmed}
+            </Statistic.Value>
+            <Statistic.Label>
+              <Icon name="check circle outline" color="green" /> confirmed rides
+            </Statistic.Label>
+          </Statistic>
+          <Statistic>
+            <Statistic.Value>
+              {(this.props.fetchingAllRidesForDay) ? "..." : this.state.todayStats.totalRequests}
+            </Statistic.Value>
+            <Statistic.Label>
+              <Icon name="inbox" color="blue" /> total requests received
+            </Statistic.Label>
+          </Statistic>
+          <Statistic>
+            <Statistic.Value>
+              {(this.props.fetchingAllRidesForDay) ? "..." : this.state.todayStats.totalPending}
+            </Statistic.Value>
+            <Statistic.Label>
+              <Icon name="question circle outline" color="blue" /> pending requests
+            </Statistic.Label>
+          </Statistic>
+        </Statistic.Group>
         <Divider hidden />
         <Button primary basic
           content="View today's complete schedule"
