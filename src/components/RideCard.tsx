@@ -123,7 +123,7 @@ class RideCard extends React.PureComponent<IRideCardProps> {
       case RideStatus.PENDING:
         return "blue";
       case RideStatus.CONFIRMED:
-        return "olive";
+        return "green";
       case RideStatus.REJECTED:
         return "red";
       case RideStatus.COMPLETED:
