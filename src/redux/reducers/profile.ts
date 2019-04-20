@@ -1,13 +1,30 @@
 import {
   PROFILE_UPDATE_REQUEST,
   PROFILE_UPDATE_SUCCESS,
-  PROFILE_UPDATE_FAILURE
+  PROFILE_UPDATE_FAILURE,
+  FETCH_ALL_DRIVERS_REQUEST,
+  FETCH_ALL_DRIVERS_SUCCESS,
+  FETCH_ALL_DRIVERS_FAILURE
 } from '../actionTypes';
 
-const initialState = {
+import { UserProfile } from '../../types';
+
+interface ProfileState {
+  updatingProfile: boolean;
+  updateErrorMsg: string;
+  updateSuccessMsg: string;
+  fetchingAllDrivers: boolean;
+  allDrivers: UserProfile[];
+  fetchingAllDriversErrMsg: string;
+}
+
+const initialState: ProfileState = {
   updatingProfile: false,
   updateErrorMsg: "",
-  updateSuccessMsg: ""
+  updateSuccessMsg: "",
+  fetchingAllDrivers: false,
+  allDrivers: [],
+  fetchingAllDriversErrMsg: ""
 };
 
 const profileReducer = (state = initialState, action: any) => {
@@ -31,6 +48,25 @@ const profileReducer = (state = initialState, action: any) => {
         ...state,
         updatingProfile: false,
         updateErrorMsg: action.payload.err.message
+      }
+    case FETCH_ALL_DRIVERS_REQUEST:
+      return {
+        ...state,
+        fetchingAllDrivers: true,
+        fetchingAllDriversErrMsg: ""
+      }
+    case FETCH_ALL_DRIVERS_SUCCESS:
+      return {
+        ...state,
+        fetchingAllDrivers: false,
+        allDrivers: action.payload,
+        fetchingAllDriversErrMsg: ""
+      }
+    case FETCH_ALL_DRIVERS_FAILURE:
+      return {
+        ...state,
+        fetchingAllDrivers: false,
+        fetchingAllDriversErrMsg: action.payload
       }
     default:
       return state;

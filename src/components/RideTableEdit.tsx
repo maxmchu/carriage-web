@@ -4,26 +4,33 @@ import '../styles/App.scss';
 import { Button, Form, Header, Icon, Modal, Item, Message, DropdownItemProps } from 'semantic-ui-react';
 
 import { connect } from 'react-redux';
-import { handleUpdateRidesRequest, clearUpdateSubmit } from '../redux/actions';
-import { Ride, RideStatus } from '../types';
+import { handleUpdateRidesRequest, clearUpdateSubmit, handleFetchAllDriversRequest } from '../redux/actions';
+import { Ride, RideStatus, UserProfile } from '../types';
 const moment = require('moment');
 
 interface IRideTableEditProps {
   updateRides: (rides: Ride[]) => any;
   clearUpdateSubmit: () => any;
+  fetchAllDrivers: () => any;
   updatingRide: boolean;
   updatingRideErrMsg: string;
   updateSubmitted: boolean;
   ride: Ride | null;
   open: any;
   onClose: any;
+  fetchingAllDrivers: boolean;
+  allDrivers: UserProfile[];
+  fetchingAllDriversErrMsg: string;
 }
 
 interface IRideTableEditState {
   rideData: Ride | null,
   pickupTime?: any;
   dropoffTime?: any;
-  rideStatus?: RideStatus
+  rideStatus?: RideStatus;
+  selectedDriver?: string;
+  driverMap?: any;
+  driverDropdownOptions?: DropdownItemProps[];
 }
 
 class RideTableEdit extends React.Component<IRideTableEditProps, IRideTableEditState> {
@@ -54,7 +61,10 @@ class RideTableEdit extends React.Component<IRideTableEditProps, IRideTableEditS
         rideData: this.props.ride,
         pickupTime: this.props.ride.pickupTime.split(" ")[1],
         dropoffTime: this.props.ride.dropoffTime.split(" ")[1],
-        rideStatus: this.props.ride.rideStatus
+        rideStatus: this.props.ride.rideStatus,
+        selectedDriver: this.props.ride.driverEmail,
+        driverMap: this.driverListToMap(this.props.allDrivers),
+        driverDropdownOptions: this.driverListToOptions(this.props.allDrivers)
       };
     } else {
       this.state = {
@@ -64,7 +74,14 @@ class RideTableEdit extends React.Component<IRideTableEditProps, IRideTableEditS
     this.onTimeChange = this.onTimeChange.bind(this);
     this.saveChanges = this.saveChanges.bind(this);
     this.onStatusChange = this.onStatusChange.bind(this);
+    this.onDriverChange = this.onDriverChange.bind(this);
     this.onClose = this.onClose.bind(this);
+    this.driverListToMap = this.driverListToMap.bind(this);
+    this.driverListToOptions = this.driverListToOptions.bind(this);
+  }
+
+  public componentWillMount() {
+    this.props.fetchAllDrivers();
   }
 
   public componentDidUpdate(prevProps) {
@@ -74,14 +91,20 @@ class RideTableEdit extends React.Component<IRideTableEditProps, IRideTableEditS
           rideData: this.props.ride,
           pickupTime: this.props.ride.pickupTime.split(" ")[1],
           dropoffTime: this.props.ride.dropoffTime.split(" ")[1],
-          rideStatus: this.props.ride.rideStatus
+          rideStatus: this.props.ride.rideStatus,
+          selectedDriver: this.props.ride.driverEmail
         });
       } else {
         this.setState({
           rideData: this.props.ride
         });
       }
-
+    }
+    if (this.props.allDrivers !== prevProps.allDrivers) {
+      this.setState({
+        driverMap: this.driverListToMap(this.props.allDrivers),
+        driverDropdownOptions: this.driverListToOptions(this.props.allDrivers)
+      });
     }
   }
 
@@ -114,20 +137,11 @@ class RideTableEdit extends React.Component<IRideTableEditProps, IRideTableEditS
                 </Message>
             }
             <Header as="h3" content="Driver Information" />
-            {
-              (this.state.rideData.driver) ?
-                <Item>
-                  <Item.Content>
-                    <Item.Header content={this.state.rideData.driver.name} />
-                    <Item.Description>
-                      <Icon icon="phone" color="green" /> {this.state.rideData.driver.phone}
-                    </Item.Description>
-                  </Item.Content>
-                </Item> :
-                <Form.Group>
-                  Placeholder
-                </Form.Group>
-            }
+            <Form.Group>
+              <Form.Dropdown search selection clearable
+                options={this.state.driverDropdownOptions} name="selectedDriver"
+                value={this.state.selectedDriver} onChange={this.onDriverChange} />
+            </Form.Group>
             <Header as="h3" content="Pickup" />
             <Form.Group>
               <Form.Input label="Pickup Time" type='time' name='pickupTime'
@@ -174,12 +188,15 @@ class RideTableEdit extends React.Component<IRideTableEditProps, IRideTableEditS
   }
 
   private onTimeChange(event) {
-    if (this.state.rideData === null) {
-      return;
-    }
     this.setState({
       ...this.state,
       [event.target.name]: event.target.value
+    });
+  }
+
+  private onDriverChange(event, data) {
+    this.setState({
+      selectedDriver: data.value
     });
   }
 
@@ -200,23 +217,45 @@ class RideTableEdit extends React.Component<IRideTableEditProps, IRideTableEditS
       ride.dropoffTime = this.props.ride.dropoffTime.split(" ")[0] + " " + this.state.dropoffTime
       ride.pickupTime = this.props.ride.pickupTime.split(" ")[0] + " " + this.state.pickupTime
       ride.rideStatus = this.state.rideStatus;
+      ride.driverEmail = this.state.selectedDriver;
       this.props.updateRides([ride]);
     } else {
       return;
     }
   }
 
+  private driverListToMap(drivers: UserProfile[]) {
+    const map = {};
+    drivers.forEach((driver) => {
+      map[driver.email] = driver
+    });
+    return map;
+  }
+
+  private driverListToOptions(drivers: UserProfile[]) {
+    return drivers.map((driver) => ({
+      text: `${driver.firstName} ${driver.lastName} (${driver.phone})`,
+      value: driver.email
+    }));
+  }
+
 }
 
 function mapStateToProps(state) {
   const { updatingRide, updatingRideErrMsg, updateSubmitted } = state.dispatcherRides;
-  return { updatingRide, updatingRideErrMsg, updateSubmitted };
+  const { fetchingAllDrivers, allDrivers, fetchingAllDriversErrMsg } = state.profile;
+
+  return {
+    updatingRide, updatingRideErrMsg, updateSubmitted,
+    fetchingAllDrivers, fetchingAllDriversErrMsg, allDrivers
+  };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     updateRides: (rides: Ride[]) => dispatch(handleUpdateRidesRequest(rides)),
-    clearUpdateSubmit: () => dispatch(clearUpdateSubmit())
+    clearUpdateSubmit: () => dispatch(clearUpdateSubmit()),
+    fetchAllDrivers: () => dispatch(handleFetchAllDriversRequest())
   };
 }
 

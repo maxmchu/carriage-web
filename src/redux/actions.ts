@@ -42,7 +42,10 @@ import {
   UPDATE_RIDES_REQUEST,
   UPDATE_RIDES_SUCCESS,
   UPDATE_RIDES_FAILURE,
-  CLEAR_UPDATE_SUBMIT
+  CLEAR_UPDATE_SUBMIT,
+  FETCH_ALL_DRIVERS_REQUEST,
+  FETCH_ALL_DRIVERS_SUCCESS,
+  FETCH_ALL_DRIVERS_FAILURE
 } from "./actionTypes";
 
 import axios from "axios";
@@ -625,5 +628,45 @@ export function clearUpdateSubmit() {
     dispatch({
       type: CLEAR_UPDATE_SUBMIT
     })
+  }
+}
+
+export function fetchAllDriversRequest() {
+  return {
+    type: FETCH_ALL_DRIVERS_REQUEST
+  };
+}
+
+export function fetchAllDriversSuccess(data): IAction {
+  return {
+    type: FETCH_ALL_DRIVERS_SUCCESS,
+    payload: data
+  };
+}
+
+export function fetchAllDriversFailure(err): IAction {
+  return {
+    type: FETCH_ALL_DRIVERS_FAILURE,
+    payload: err
+  };
+}
+
+export function handleFetchAllDriversRequest() {
+  return function (dispatch) {
+    dispatch(fetchAllDriversRequest());
+    axios.post('/profile/getAllDrivers', {}).then(
+      response => {
+        if (response.data.err) {
+          dispatch(fetchAllDriversFailure(response.data.err));
+          console.error("An error occurred: ", response.data.err);
+        } else {
+          console.log(response.data.drivers)
+          dispatch(fetchAllDriversSuccess(response.data.drivers));
+        }
+      },
+      err => {
+        dispatch(fetchAllDriversFailure(err));
+      }
+    );
   }
 }

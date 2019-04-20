@@ -54,7 +54,6 @@ class RideRequests extends React.Component<IRequestsProps, IRequestsState> {
   }
 
   public componentDidUpdate(prevProps) {
-    console.log(this.props)
     if (prevProps.allRequestsForDay !== this.props.allRequestsForDay) {
       this.setState({
         data: this.props.allRequestsForDay

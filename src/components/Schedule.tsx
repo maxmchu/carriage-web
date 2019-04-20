@@ -7,6 +7,7 @@ const moment = require('moment');
 import { handleFetchAllRidesForDayRequest } from '../redux/actions';
 
 import { Button, Divider, Grid, Header, Container, Form, Loader, Message } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
 import { SingleDatePicker } from 'react-dates';
 import { sortBy } from 'lodash';
 
@@ -79,7 +80,7 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
     return (
       <div>
         <DashboardNav />
-        <Container>
+        <Container className="wider-container">
           <Divider horizontal>
             <Header as="h1" content={`Ride Schedule`} />
             {this.state.currentDate.format("MMMM Do, YYYY")}

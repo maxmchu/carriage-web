@@ -50,7 +50,7 @@ class RideTable extends React.Component<IRideTableProps, IRideTableState> {
   public render(): JSX.Element {
     return (this.state.data.length > 0) ? (
       <div>
-        <Table celled sortable compact>
+        <Table celled sortable compact collapsing>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell content="Pickup Time" name="pickupTime"
@@ -86,15 +86,17 @@ class RideTable extends React.Component<IRideTableProps, IRideTableState> {
                     {
                       (ride.rider) ?
                         <Table.Cell collapsing>
-                          {ride.rider.name} (<Icon name='phone' /> {ride.rider.phone})
-                      </Table.Cell> :
+                          {ride.rider.name}<br />
+                          <Icon name='phone' /> {ride.rider.phone}
+                        </Table.Cell> :
                         <Table.Cell collapsing content="No rider info" />
                     }
                     {
                       (ride.driver) ?
                         <Table.Cell collapsing>
-                          {ride.driver.name} (<Icon name='phone' /> {ride.driver.phone})
-                      </Table.Cell> :
+                          {ride.driver.name}<br />
+                          <Icon name='phone' /> {ride.driver.phone}
+                        </Table.Cell> :
                         <Table.Cell collapsing content="No driver info" />
                     }
                     <Table.Cell collapsing content={
