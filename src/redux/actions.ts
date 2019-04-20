@@ -660,7 +660,6 @@ export function handleFetchAllDriversRequest() {
           dispatch(fetchAllDriversFailure(response.data.err));
           console.error("An error occurred: ", response.data.err);
         } else {
-          console.log(response.data.drivers)
           dispatch(fetchAllDriversSuccess(response.data.drivers));
         }
       },
