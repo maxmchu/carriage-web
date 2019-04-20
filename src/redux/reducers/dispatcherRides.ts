@@ -10,10 +10,10 @@ import {
   FETCH_ALL_REQUESTS_FOR_DAY_FAILURE,
   UPDATE_RIDES_REQUEST,
   UPDATE_RIDES_SUCCESS,
-  UPDATE_RIDES_FAILURE
+  UPDATE_RIDES_FAILURE,
+  CLEAR_UPDATE_SUBMIT
 } from '../actionTypes';
 import { Ride } from '../../types';
-import { string } from 'prop-types';
 
 interface IDispatcherRidesState {
   upcomingRidesForDay: Ride[];
@@ -27,6 +27,7 @@ interface IDispatcherRidesState {
   allRequestsForDayErrMsg: string;
   updatingRide: boolean;
   updatingRideErrMsg: string;
+  updateSubmitted: boolean;
 }
 
 const initialState: IDispatcherRidesState = {
@@ -40,7 +41,8 @@ const initialState: IDispatcherRidesState = {
   fetchingAllRequestsForDay: false,
   allRequestsForDayErrMsg: "",
   updatingRide: false,
-  updatingRideErrMsg: ""
+  updatingRideErrMsg: "",
+  updateSubmitted: false
 }
 
 const dispatcherRidesReducer = (state = initialState, action) => {
@@ -116,22 +118,33 @@ const dispatcherRidesReducer = (state = initialState, action) => {
       return {
         ...state,
         updatingRide: true,
-        updatingRideErrMsg: ""
+        updatingRideErrMsg: "",
+        updateSubmitted: false
       };
 
     case UPDATE_RIDES_SUCCESS:
       return {
         ...state,
         updatingRide: false,
-        updatingRideErrMsg: ""
+        updatingRideErrMsg: "",
+        updateSubmitted: true
       };
 
     case UPDATE_RIDES_FAILURE:
       return {
         ...state,
         updatingRide: false,
-        updatingRideErrMsg: action.payload
+        updatingRideErrMsg: action.payload,
+        updateSubmitted: false
       };
+
+    case CLEAR_UPDATE_SUBMIT:
+      return {
+        ...state,
+        updateSubmitted: false,
+        updatingRide: false,
+        updatingRideErrMsg: ""
+      }
 
     default:
       return state;

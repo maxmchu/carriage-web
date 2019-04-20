@@ -41,7 +41,8 @@ import {
   FETCH_ALL_REQUESTS_FOR_DAY_FAILURE,
   UPDATE_RIDES_REQUEST,
   UPDATE_RIDES_SUCCESS,
-  UPDATE_RIDES_FAILURE
+  UPDATE_RIDES_FAILURE,
+  CLEAR_UPDATE_SUBMIT
 } from "./actionTypes";
 
 import axios from "axios";
@@ -616,5 +617,13 @@ export function handleUpdateRidesRequest(data) {
         dispatch(updateRidesFailure(err));
       }
     );
+  }
+}
+
+export function clearUpdateSubmit() {
+  return function (dispatch) {
+    dispatch({
+      type: CLEAR_UPDATE_SUBMIT
+    })
   }
 }

@@ -169,8 +169,6 @@ function mapStatetoProps(state) {
   const {
     allRequestsForDay, fetchingAllRequestsForDay, allRequestsForDayErrMsg
   } = state.dispatcherRides;
-  console.log(allRequestsForDay);
-  console.log(state.dispatcherRides);
   return {
     allRequestsForDay, fetchingAllRequestsForDay, allRequestsForDayErrMsg
   };
