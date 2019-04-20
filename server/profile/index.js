@@ -102,6 +102,32 @@ router.post('/batchGet', (req, res) => {
   } catch (err) {
     res.json({ err });
   }
-})
+});
+
+router.post('/getAllDrivers', (req, res) => {
+  const { placeholder } = req.body;
+  try {
+    const params = {
+      TableName: process.env.AWS_DYNAMODB_USER_TABLENAME,
+      FilterExpression: 'accountType = :at',
+      ExpressionAttributeValues: { ':at': 'driver' }
+    };
+    documentClient.scan(params, function (err, data) {
+      if (err) {
+        console.error(err, err.stack);
+        res.json({ err })
+      } else {
+        const drivers = data.Items.map((driver => {
+          delete driver.password;
+          delete driver.accountType;
+          return driver;
+        }))
+        res.json({ drivers })
+      }
+    });
+  } catch (err) {
+    res.json({ err });
+  }
+});
 
 module.exports = router;

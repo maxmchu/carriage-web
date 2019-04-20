@@ -50,3 +50,10 @@ export interface Ride {
   needsWheelchair: boolean;
   needsExtraSpace: boolean;
 }
+
+export interface UserProfile {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+}
