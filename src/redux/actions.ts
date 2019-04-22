@@ -45,7 +45,10 @@ import {
   CLEAR_UPDATE_SUBMIT,
   FETCH_ALL_DRIVERS_REQUEST,
   FETCH_ALL_DRIVERS_SUCCESS,
-  FETCH_ALL_DRIVERS_FAILURE
+  FETCH_ALL_DRIVERS_FAILURE,
+  SCHEDULE_RIDES_REQUEST,
+  SCHEDULE_RIDES_SUCCESS,
+  SCHEDULE_RIDES_FAILURE
 } from "./actionTypes";
 
 import axios from "axios";
@@ -665,6 +668,46 @@ export function handleFetchAllDriversRequest() {
       },
       err => {
         dispatch(fetchAllDriversFailure(err));
+      }
+    );
+  }
+}
+
+export function scheduleRidesRequest(data): IAction {
+  return {
+    type: SCHEDULE_RIDES_REQUEST,
+    payload: data
+  };
+}
+
+export function scheduleRidesSuccess(data): IAction {
+  return {
+    type: SCHEDULE_RIDES_SUCCESS,
+    payload: data
+  }
+}
+
+export function scheduleRidesFailure(err): IAction {
+  return {
+    type: SCHEDULE_RIDES_FAILURE,
+    payload: err
+  };
+}
+
+export function handleScheduleRidesRequest(data) {
+  return function (dispatch) {
+    dispatch(scheduleRidesRequest(data));
+    axios.post('/scheduler/scheduleRides', { requested_date: data }).then(
+      response => {
+        if (response.data.err) {
+          dispatch(scheduleRidesFailure(response.data.err));
+          console.error("An error occurred: ", response.data.err);
+        } else {
+          dispatch(scheduleRidesSuccess(response.data));
+        }
+      },
+      err => {
+        dispatch(scheduleRidesFailure(err))
       }
     );
   }
