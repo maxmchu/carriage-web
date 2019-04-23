@@ -1,7 +1,7 @@
 import * as React from 'react';
 import '../styles/App.scss';
 
-import { Card, Item, SemanticCOLORS } from 'semantic-ui-react';
+import { Card, Header, SemanticCOLORS } from 'semantic-ui-react';
 
 import '../styles/components/ridecard.scss';
 import { RideStatus, RideUserInfo, AccountType } from '../types';
@@ -75,40 +75,28 @@ class RideCard extends React.PureComponent<IRideCardProps> {
 
   private renderDriverInfo() {
     return (this.props.driver) ?
-      <Card.Content>
+      <Card.Content className="ride-card-match">
         <Card.Header>Driver Information</Card.Header>
         <Card.Description>
-          <Item.Group>
-            <Item>
-              <Item.Content verticalAlign='middle'>
-                <Item.Header className={"ride-card-driver-name"}>{this.props.driver.name}</Item.Header>
-                <Item.Description className={"ride-card-driver-phone"}>{this.props.driver.phone}</Item.Description>
-              </Item.Content>
-            </Item>
-          </Item.Group>
+          <Header as="h4" content={this.props.driver.name} />
+          {this.props.driver.phone}
         </Card.Description>
       </Card.Content> :
-      <Card.Content>
+      <Card.Content className="ride-card-match">
         <Card.Description content={"Information about your driver will be posted here once your ride is confirmed."} />
       </Card.Content>
   }
 
   private renderRiderInfo() {
     return (this.props.rider) ?
-      <Card.Content>
+      <Card.Content className="ride-card-match">
         <Card.Header>Rider Information</Card.Header>
         <Card.Description>
-          <Item.Group>
-            <Item>
-              <Item.Content verticalAlign='middle'>
-                <Item.Header className={"ride-card-driver-name"}>{this.props.rider.name}</Item.Header>
-                <Item.Description className={"ride-card-driver-phone"}>{this.props.rider.phone}</Item.Description>
-              </Item.Content>
-            </Item>
-          </Item.Group>
+          <Header as="h4" content={this.props.rider.name} />
+          {this.props.rider.phone}
         </Card.Description>
-      </Card.Content> :
-      <Card.Content>
+      </Card.Content > :
+      <Card.Content className="ride-card-match">
         <Card.Description content={"Rider information is missing. Contact dispatchers for ride information."} />
       </Card.Content>
   }

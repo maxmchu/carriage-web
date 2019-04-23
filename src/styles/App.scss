@@ -61,3 +61,11 @@ $s_black          : #000000;
 .ui.container.wider-container {
   width: 90%;
 }
+
+@media screen and (-webkit-min-device-pixel-ratio:0) and (max-device-width:1024px){ 
+  select,
+  textarea,
+  input {
+    font-size: 16px !important;
+  }
+}

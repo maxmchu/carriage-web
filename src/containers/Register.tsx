@@ -92,7 +92,8 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
               name='phone'
               onChange={this.handleChange}
               required />
-            <Button type='submit' onClick={this.handleSubmit}>Register</Button>
+            <Button type='submit' onClick={this.handleSubmit} color="green">Register</Button>
+            <Button content="Go Back" as={Link} to="/" basic />
           </Form>
           <Segment color='blue'>
             <p>
