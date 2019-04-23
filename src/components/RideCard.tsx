@@ -42,7 +42,7 @@ class RideCard extends React.PureComponent<IRideCardProps> {
             content={capitalize(this.props.rideStatus)}
             className={`${this.statusColor(this.props.rideStatus)} ride-status`} />
         </Card.Content>
-        <Card.Content>
+        <Card.Content className="ride-card-dest">
           <Card.Header content={`${this.formatTime(this.props.pickupTime)} pickup`} />
           <Card.Meta
             content={this.props.pickupLocationString}
@@ -54,7 +54,7 @@ class RideCard extends React.PureComponent<IRideCardProps> {
             null
           }
         </Card.Content>
-        <Card.Content>
+        <Card.Content className="ride-card-dest">
           <Card.Header content={`${this.formatTime(this.props.dropoffTime)} dropoff`} />
           <Card.Meta
             content={this.props.dropoffLocationString}
@@ -101,8 +101,8 @@ class RideCard extends React.PureComponent<IRideCardProps> {
           <Item.Group>
             <Item>
               <Item.Content verticalAlign='middle'>
-                <Item.Header>{this.props.rider.name}</Item.Header>
-                <Item.Description>{this.props.rider.phone}</Item.Description>
+                <Item.Header className={"ride-card-driver-name"}>{this.props.rider.name}</Item.Header>
+                <Item.Description className={"ride-card-driver-phone"}>{this.props.rider.phone}</Item.Description>
               </Item.Content>
             </Item>
           </Item.Group>

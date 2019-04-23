@@ -697,7 +697,7 @@ export function scheduleRidesFailure(err): IAction {
 export function handleScheduleRidesRequest(data) {
   return function (dispatch) {
     dispatch(scheduleRidesRequest(data));
-    axios.post('/scheduler/scheduleRides', { requested_date: data }).then(
+    axios.post('/demo/scheduleRequests', { requested_date: data }).then(
       response => {
         if (response.data.err) {
           dispatch(scheduleRidesFailure(response.data.err));

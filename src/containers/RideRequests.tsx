@@ -2,21 +2,25 @@ import * as React from 'react';
 import '../styles/App.scss';
 import { connect } from 'react-redux';
 
-import { Button, Container, Divider, Form, Grid, Header } from 'semantic-ui-react';
+import { Button, Container, Divider, Form, Grid, Header, Message, Icon } from 'semantic-ui-react';
 import { Moment } from 'moment';
 const moment = require('moment');
 import { SingleDatePicker } from 'react-dates';
 import DashboardNav from '../components/DashboardNav';
 import RideTable from '../components/RideTable';
-import { handleFetchAllRequestsForDayRequest } from '../redux/actions';
+import { handleFetchAllRequestsForDayRequest, handleScheduleRidesRequest } from '../redux/actions';
 
 import { Ride } from '../types';
 
 interface IRequestsProps {
   fetchAllRequestsForDay: (requestedDate: string) => Ride[];
+  scheduleRides: (requestedDate: string) => any;
   allRequestsForDay: Ride[];
   fetchingAllRequestsForDay: boolean;
   allRequestsForDayErrMsg: string;
+  schedulingRides: boolean;
+  schedulingRidesResponse: any;
+  schedulingRidesSuccess: boolean;
 }
 
 interface IRequestsState {
@@ -47,6 +51,7 @@ class RideRequests extends React.Component<IRequestsProps, IRequestsState> {
     this.onDateSubmit = this.onDateSubmit.bind(this);
     this.viewTodaysRequests = this.viewTodaysRequests.bind(this);
     this.viewTomorrowsRequests = this.viewTomorrowsRequests.bind(this);
+    this.onScheduleRideRequest = this.onScheduleRideRequest.bind(this);
   }
 
   public componentWillMount() {
@@ -119,7 +124,50 @@ class RideRequests extends React.Component<IRequestsProps, IRequestsState> {
             </Grid.Row>
           </Grid>
           <Header as="h3" content="Pending requests" />
-          <RideTable rides={this.state.data} />
+          {
+            (this.state.data.length > 0) ?
+              <div>
+                <Button basic icon="setting" labelPosition="left"
+                  content={`Auto-schedule this day's requests (${this.state.selectedDate.format("MMM D")})`}
+                  onClick={this.onScheduleRideRequest} />
+                <Divider hidden />
+              </div>
+              : null
+          }
+          {
+            (this.props.fetchingAllRequestsForDay) ?
+              <Message icon>
+                <Icon name='circle notched' loading />
+                <Message.Content>
+                  <Message.Header>Just one second</Message.Header>
+                  We are fetching those ride requests for you!
+                </Message.Content>
+              </Message> :
+              null
+          }
+          {
+            (this.props.schedulingRides) ?
+              <Message icon>
+                <Icon name='circle notched' loading />
+                <Message.Content>
+                  <Message.Header>Just one second</Message.Header>
+                  We are scheduling those rides for you!
+                </Message.Content>
+              </Message> :
+              null
+          }
+          {
+            (this.props.schedulingRidesSuccess) ?
+              <Message icon positive>
+                <Icon name='check circle outline' />
+                <Message.Content>
+                  <Message.Header>Success</Message.Header>
+                  Rides were scheduled!
+                </Message.Content>
+              </Message> :
+              null
+          }
+          <RideTable rides={this.state.data} showEdit />
         </Container>
       </div >
     );
@@ -141,7 +189,8 @@ class RideRequests extends React.Component<IRequestsProps, IRequestsState> {
   private onDateSubmit(event) {
     this.props.fetchAllRequestsForDay(this.state.selectedDate.format("YYYY-MM-DD"));
     this.setState({
-      currentDate: this.state.selectedDate
+      currentDate: this.state.selectedDate,
+      data: this.props.allRequestsForDay
     });
   }
 
@@ -162,20 +211,27 @@ class RideRequests extends React.Component<IRequestsProps, IRequestsState> {
     });
   }
 
+  private onScheduleRideRequest(event) {
+    this.props.scheduleRides("2019-04-25");
+  }
+
 }
 
 function mapStatetoProps(state) {
   const {
     allRequestsForDay, fetchingAllRequestsForDay, allRequestsForDayErrMsg
   } = state.dispatcherRides;
+  const { schedulingRides, schedulingRidesResponse, schedulingRidesSuccess } = state.scheduler;
   return {
-    allRequestsForDay, fetchingAllRequestsForDay, allRequestsForDayErrMsg
+    allRequestsForDay, fetchingAllRequestsForDay, allRequestsForDayErrMsg,
+    schedulingRides, schedulingRidesResponse, schedulingRidesSuccess
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchAllRequestsForDay: (requestedDate) => dispatch(handleFetchAllRequestsForDayRequest(requestedDate))
+    fetchAllRequestsForDay: (requestedDate) => dispatch(handleFetchAllRequestsForDayRequest(requestedDate)),
+    scheduleRides: (requestedDate) => dispatch(handleScheduleRidesRequest(requestedDate))
   };
 }
 

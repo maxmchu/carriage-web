@@ -83,6 +83,7 @@ app.use('/db', require('./db'))
 app.use('/rides', require('./rides'))
 app.use('/profile', require('./profile'))
 app.use('/scheduler', require('./scheduler'))
+app.use('/demo', require('./demo'))
 
 // ====== Error handler ====
 app.use(function (err, req, res, next) {
