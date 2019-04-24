@@ -42,6 +42,7 @@ interface IRequestFormState {
   needsWheelchair: boolean;
   needsExtraSpace: boolean;
   submitEnabled: boolean;
+  currentTime: Moment;
 }
 
 class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> {
@@ -49,6 +50,7 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
   public constructor(props) {
     super(props);
     this.state = {
+      currentTime: moment(),
       date: moment().endOf("day").add(1, "days"),
       focused: false,
       pickupTime: "08:00",
@@ -214,9 +216,11 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
   private onTimeChange(event) {
     this.setState({
       ...this.state,
-      [event.target.name]: event.target.value,
+      [event.target.name]: event.target.value
+    });
+    this.setState({
       submitEnabled: this.isReadyToSubmit()
-    })
+    });
   }
 
   private onWheelchairChange(e) {
@@ -312,12 +316,14 @@ class RequestForm extends React.Component<IRequestFormProps, IRequestFormState> 
 
   private isReadyToSubmit() {
     const timeRe = new RegExp(/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/);
+    const duration = moment.duration(this.state.pickupTime);
     const conditions = [
-      this.state.date.diff(moment()) > 0,
+      this.state.date.clone().add(duration).diff(this.state.currentTime) > 0,
       timeRe.test(this.state.pickupTime),
       timeRe.test(this.state.dropoffTime),
       this.state.pickupLocationString.length > 0,
-      this.state.dropoffLocationString.length > 0
+      this.state.dropoffLocationString.length > 0,
+      this.state.dropoffTime > this.state.pickupTime
     ];
     return (findIndex(conditions, (i) => i === false) === -1);
   }
