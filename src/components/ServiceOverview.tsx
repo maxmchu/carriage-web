@@ -62,7 +62,7 @@ class ServiceOverview extends React.Component<ISchedulingProps, ISchedulingState
   }
 
   public componentDidUpdate(prevProps: ISchedulingProps) {
-    if (this.props.upcomingRidesForDay.length !== prevProps.upcomingRidesForDay.length) {
+    if (this.props.upcomingRidesForDay !== prevProps.upcomingRidesForDay) {
       this.setState({
         ridesInProgress: this.getRidesInProgress(),
         upcomingRides: this.getUpcomingRides()
@@ -143,7 +143,6 @@ class ServiceOverview extends React.Component<ISchedulingProps, ISchedulingState
   }
 
   private getRidesInProgress(): Ride[] {
-    console.log(this.props.upcomingRidesForDay);
     return this.props.upcomingRidesForDay.filter((ride) =>
       this.state.currentTime.isBetween(ride.pickupTime, ride.dropoffTime) && ride.rideStatus === RideStatus.CONFIRMED);
   }
